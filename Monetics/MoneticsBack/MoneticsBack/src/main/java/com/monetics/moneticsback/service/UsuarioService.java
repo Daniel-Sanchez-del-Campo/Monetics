@@ -1,9 +1,12 @@
 package com.monetics.moneticsback.service;
 
+import com.monetics.moneticsback.dto.CrearUsuarioDTO;
 import com.monetics.moneticsback.dto.UsuarioDTO;
 import com.monetics.moneticsback.exception.RecursoNoEncontradoException;
 import com.monetics.moneticsback.model.Usuario;
+import com.monetics.moneticsback.model.enums.RolUsuario;
 import com.monetics.moneticsback.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,18 +17,51 @@ import java.util.stream.Collectors;
  *
  * IMPORTANTE:
  * - Los controllers SOLO deben usar métodos que devuelven DTOs
- * - Los services pueden usar métodos que devuelven entidades
+ * - Los services y Security usan métodos que devuelven ENTIDADES
  *
- * Esto evita exponer entidades JPA al exterior y mantiene
- * una arquitectura limpia.
+ * Esto mantiene una arquitectura limpia y segura.
  */
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(
+            UsuarioRepository usuarioRepository,
+            PasswordEncoder passwordEncoder
+    ) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    /* ============================
+       CREACIÓN DE USUARIO
+       ============================ */
+
+    /**
+     * Crea un usuario nuevo de forma segura.
+     *
+     * - Hashea la contraseña con BCrypt
+     * - Guarda SOLO el hash
+     * - Evita problemas posteriores en el login
+     */
+    public void crearUsuario(CrearUsuarioDTO dto) {
+
+        Usuario usuario = new Usuario();
+
+        usuario.setNombre(dto.getNombre());
+        usuario.setEmail(dto.getEmail());
+
+        // 🔐 AQUÍ SE HASHEA LA CONTRASEÑA
+        usuario.setPassword(
+                passwordEncoder.encode(dto.getPassword())
+        );
+
+        usuario.setRol(RolUsuario.valueOf(dto.getRol()));
+        usuario.setActivo(true);
+
+        usuarioRepository.save(usuario);
     }
 
     /* ============================
@@ -33,9 +69,7 @@ public class UsuarioService {
        ============================ */
 
     /**
-     * Obtiene un usuario y lo devuelve como DTO.
-     *
-     * Uso exclusivo desde controllers.
+     * Obtiene un usuario por ID y lo devuelve como DTO.
      */
     public UsuarioDTO obtenerUsuarioDTO(Long idUsuario) {
         Usuario usuario = obtenerUsuarioEntidad(idUsuario);
@@ -44,8 +78,6 @@ public class UsuarioService {
 
     /**
      * Obtiene los empleados de un manager como DTOs.
-     *
-     * Uso desde controllers.
      */
     public List<UsuarioDTO> obtenerEmpleadosDeManager(Long idManager) {
         return usuarioRepository.findByManager_IdUsuario(idManager)
@@ -55,13 +87,13 @@ public class UsuarioService {
     }
 
     /* ============================
-       MÉTODOS PARA SERVICES (ENTIDAD)
+       MÉTODOS PARA SERVICES / SECURITY (ENTIDAD)
        ============================ */
 
     /**
-     * Obtiene un usuario como entidad JPA.
+     * Obtiene un usuario como entidad a partir de su ID.
      *
-     * Uso EXCLUSIVO desde otros services (GastoService, Security, etc.).
+     * Uso interno (GastoService, Security, etc.).
      */
     public Usuario obtenerUsuarioEntidad(Long idUsuario) {
         return usuarioRepository.findById(idUsuario)
@@ -71,11 +103,14 @@ public class UsuarioService {
     }
 
     /**
-     * Obtiene un usuario por email como entidad.
+     * Obtiene un usuario como entidad a partir de su EMAIL.
      *
-     * Uso interno (autenticación, seguridad).
+     * Uso interno:
+     * - Login
+     * - JWT
+     * - Spring Security
      */
-    public Usuario obtenerUsuarioPorEmail(String email) {
+    public Usuario obtenerUsuarioEntidadPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new RecursoNoEncontradoException("Usuario no encontrado")

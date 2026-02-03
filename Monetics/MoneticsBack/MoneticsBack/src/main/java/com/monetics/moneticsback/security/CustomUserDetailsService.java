@@ -14,12 +14,12 @@ import java.util.Collections;
 /**
  * Implementación personalizada de UserDetailsService.
  *
- * Este servicio le dice a Spring Security:
+ * Este servicio le indica a Spring Security:
  * - cómo cargar un usuario desde la base de datos
  * - qué campo usamos como username (email)
  * - qué roles tiene el usuario
  *
- * Es el puente entre Spring Security y nuestra entidad Usuario.
+ * Usa métodos INTERNOS del UsuarioService que devuelven ENTIDADES.
  */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -34,29 +34,33 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Método que Spring Security llama automáticamente
      * cuando necesita autenticar un usuario.
      *
-     * @param username en nuestro caso es el EMAIL
+     * @param username email del usuario
      * @return UserDetails que Spring Security entiende
      */
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
 
-        // Obtenemos el usuario como entidad desde nuestro dominio
-        Usuario usuario = usuarioService.obtenerUsuarioPorEmail(username);
+        // 🔧 AQUÍ ESTABA EL ERROR:
+        // Antes: obtenerUsuarioPorEmail(username)
+        // Ahora: obtenerUsuarioEntidadPorEmail(username)
 
-        // Convertimos el rol del usuario a un formato que Spring entiende
+        Usuario usuario =
+                usuarioService.obtenerUsuarioEntidadPorEmail(username);
+
+        // Convertimos el rol a un formato que Spring Security entiende
         GrantedAuthority authority =
                 new SimpleGrantedAuthority(usuario.getRol().name());
 
-        // Devolvemos un UserDetails estándar de Spring
+        // Devolvemos un UserDetails estándar
         return new org.springframework.security.core.userdetails.User(
-                usuario.getEmail(),          // username
-                usuario.getPassword(),       // password cifrado
-                usuario.getActivo(),          // enabled
-                true,                         // accountNonExpired
-                true,                         // credentialsNonExpired
-                true,                         // accountNonLocked
-                Collections.singleton(authority) // roles
+                usuario.getEmail(),      // username
+                usuario.getPassword(),   // password cifrada
+                usuario.getActivo(),     // enabled
+                true,                    // accountNonExpired
+                true,                    // credentialsNonExpired
+                true,                    // accountNonLocked
+                Collections.singleton(authority)
         );
     }
 }

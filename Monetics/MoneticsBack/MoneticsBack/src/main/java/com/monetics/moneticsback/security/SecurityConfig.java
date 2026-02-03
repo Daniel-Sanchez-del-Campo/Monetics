@@ -3,84 +3,95 @@ package com.monetics.moneticsback.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Configuración principal de Spring Security.
  *
- * Este archivo define:
- * - Cómo se protege la API
- * - Qué endpoints son públicos y cuáles no
- * - Que la aplicación es STATELESS (sin sesiones)
- *
- * Es la base sobre la que luego se monta JWT.
+ * Registro explícito del AuthenticationProvider
+ * (obligatorio en Spring Security 6 para login manual).
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+
+    public SecurityConfig(
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomUserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     /**
-     * Define la cadena de filtros de seguridad.
-     *
-     * Aquí indicamos:
-     * - Que no usamos sesiones
-     * - Que desactivamos CSRF (API REST)
-     * - Qué rutas son públicas
-     * - Que el resto requiere autenticación
+     * AuthenticationProvider basado en BBDD + BCrypt.
      */
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return provider;
+    }
+
+    /**
+     * AuthenticationManager construido explícitamente
+     * a partir del AuthenticationProvider.
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http
+    ) throws Exception {
+
+        AuthenticationManagerBuilder authBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+
+        authBuilder.authenticationProvider(authenticationProvider());
+
+        return authBuilder.build();
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // Desactivamos CSRF porque usamos JWT y no sesiones
                 .csrf(csrf -> csrf.disable())
 
-                // Indicamos que la aplicación NO mantiene estado (stateless)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Configuración de permisos de acceso
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoint público (login vendrá aquí)
                         .requestMatchers("/api/auth/**").permitAll()
-
-                        // El resto de endpoints requieren autenticación
+                        .requestMatchers(
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
+                )
+
+                // Filtro JWT
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
                 );
 
         return http.build();
-    }
-
-    /**
-     * AuthenticationManager se encarga de autenticar usuarios.
-     *
-     * Spring lo usa internamente cuando hagamos login
-     * (email + password).
-     */
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    /**
-     * PasswordEncoder para cifrar contraseñas.
-     *
-     * Usamos BCrypt porque:
-     * - es seguro
-     * - es estándar
-     * - es lo recomendado por Spring
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
