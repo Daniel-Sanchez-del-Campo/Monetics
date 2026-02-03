@@ -144,11 +144,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre`, `email`, `password`, `rol`, `id_departamento`, `id_manager`, `activo`) VALUES
-(1, 'Administrador Sistema', 'admin@monetics.com', 'admin123', 'ROLE_ADMIN', 1, NULL, 1),
-(2, 'Laura Manager Tech', 'laura.manager@monetics.com', 'manager123', 'ROLE_MANAGER', 1, NULL, 1),
-(3, 'Carlos Developer', 'carlos.dev@monetics.com', 'user123', 'ROLE_USER', 1, 2, 1),
-(4, 'Ana Developer', 'ana.dev@monetics.com', 'user123', 'ROLE_USER', 1, 2, 1),
-(5, 'Mario Finanzas', 'mario.finanzas@monetics.com', 'user123', 'ROLE_USER', 2, NULL, 1);
+(1, 'Administrador Sistema', 'admin@monetics.com', '$2a$10$ZOgaE4AUM2njgC4xVsNmYOorUX.0/vtQC8FHax4coQr75leNahEny', 'ROLE_ADMIN', 1, NULL, 1),
+(2, 'Laura Manager Tech', 'laura.manager@monetics.com', '$2a$10$ZOgaE4AUM2njgC4xVsNmYOorUX.0/vtQC8FHax4coQr75leNahEny', 'ROLE_MANAGER', 1, NULL, 1),
+(3, 'Carlos Developer', 'carlos.dev@monetics.com', '$2a$10$ZOgaE4AUM2njgC4xVsNmYOorUX.0/vtQC8FHax4coQr75leNahEny', 'ROLE_USER', 1, 2, 1),
+(4, 'Ana Developer', 'ana.dev@monetics.com', '$2a$10$ZOgaE4AUM2njgC4xVsNmYOorUX.0/vtQC8FHax4coQr75leNahEny', 'ROLE_USER', 1, 2, 1),
+(5, 'Mario Finanzas', 'mario.finanzas@monetics.com', '$2a$10$ZOgaE4AUM2njgC4xVsNmYOorUX.0/vtQC8FHax4coQr75leNahEny', 'ROLE_USER', 2, NULL, 1);
 
 --
 -- Índices para tablas volcadas

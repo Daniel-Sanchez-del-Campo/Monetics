@@ -1,85 +1,103 @@
-import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { ApiService } from './api.service';
-import { LoginRequest, LoginResponse, RegisterRequest, Usuario } from '../models';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Usuario } from '../models';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<Usuario | null>(null);
-  public currentUser$ = this.currentUserSubject.asObservable();
+
+  private apiUrl = '/api/auth';
+  private currentUserSubject: BehaviorSubject<Usuario | null>;
+  public currentUser$: Observable<Usuario | null>;
+  private isBrowser: boolean;
 
   constructor(
-    private apiService: ApiService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) platformId: Object
   ) {
-    // Cargar usuario del localStorage al iniciar
-    this.loadUserFromStorage();
+    this.isBrowser = isPlatformBrowser(platformId);
+    // Inicializar con el usuario guardado en localStorage (si existe y estamos en el navegador)
+    const savedUser = this.getUserFromStorage();
+    this.currentUserSubject = new BehaviorSubject<Usuario | null>(savedUser);
+    this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
-  private loadUserFromStorage(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-
-    if (token && userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        this.currentUserSubject.next(user);
-      } catch (e) {
-        this.logout();
-      }
+  private getUserFromStorage(): Usuario | null {
+    if (!this.isBrowser) {
+      return null;
     }
-  }
-
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.apiService.post<LoginResponse>('/auth/login', credentials).pipe(
-      tap(response => {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.usuario));
-        }
-        this.currentUserSubject.next(response.usuario);
-      })
-    );
-  }
-
-  register(data: RegisterRequest): Observable<LoginResponse> {
-    return this.apiService.post<LoginResponse>('/auth/register', data).pipe(
-      tap(response => {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('user', JSON.stringify(response.usuario));
-        }
-        this.currentUserSubject.next(response.usuario);
-      })
-    );
-  }
-
-  logout(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    }
-    this.currentUserSubject.next(null);
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   }
 
   get currentUserValue(): Usuario | null {
     return this.currentUserSubject.value;
   }
 
-  get isAuthenticated(): boolean {
-    return !!this.currentUserValue;
-  }
-
   get isManager(): boolean {
-    return this.currentUserValue?.rol === 'MANAGER';
+    return this.currentUserValue?.rol === 'ROLE_MANAGER';
   }
 
-  get isEmpleado(): boolean {
-    return this.currentUserValue?.rol === 'EMPLEADO';
+  get isAdmin(): boolean {
+    return this.currentUserValue?.rol === 'ROLE_ADMIN';
+  }
+
+  get isAuthenticated(): boolean {
+    return !!this.getToken() && !!this.currentUserValue;
+  }
+
+  login(credentials: { email: string; password: string }) {
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(response => {
+        this.saveToken(response.token);
+        this.saveUser(response);
+      })
+    );
+  }
+
+  register(userData: { nombre: string; email: string; password: string; idDepartamento: number }) {
+    return this.http.post<any>(`${this.apiUrl}/register`, userData).pipe(
+      tap(response => {
+        this.saveToken(response.token);
+        this.saveUser(response);
+      })
+    );
+  }
+
+  saveToken(token: string) {
+    if (this.isBrowser) {
+      localStorage.setItem('token', token);
+    }
+  }
+
+  private saveUser(response: any) {
+    if (!this.isBrowser) {
+      return;
+    }
+    // El backend devuelve { token, usuario: {...} }
+    const user: Usuario = response.usuario;
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+  }
+
+  getToken(): string | null {
+    if (!this.isBrowser) {
+      return null;
+    }
+    return localStorage.getItem('token');
+  }
+
+  getUser(): Usuario | null {
+    return this.getUserFromStorage();
+  }
+
+  logout() {
+    if (this.isBrowser) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+    this.currentUserSubject.next(null);
   }
 }
