@@ -5,40 +5,23 @@ package com.monetics.moneticsback.dto;
  *
  * Contiene:
  * - Token JWT
- * - Información básica del usuario autenticado
+ * - Información del usuario autenticado como UsuarioDTO anidado
  */
 public class LoginResponseDTO {
 
     private String token;
-    private Long idUsuario;
-    private String email;
-    private String rol;
+    private UsuarioDTO usuario;
 
-    public LoginResponseDTO(
-            String token,
-            Long idUsuario,
-            String email,
-            String rol
-    ) {
+    public LoginResponseDTO(String token, UsuarioDTO usuario) {
         this.token = token;
-        this.idUsuario = idUsuario;
-        this.email = email;
-        this.rol = rol;
+        this.usuario = usuario;
     }
 
     public String getToken() {
         return token;
     }
 
-    public Long getIdUsuario() {
-        return idUsuario;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getRol() {
-        return rol;
+    public UsuarioDTO getUsuario() {
+        return usuario;
     }
 }

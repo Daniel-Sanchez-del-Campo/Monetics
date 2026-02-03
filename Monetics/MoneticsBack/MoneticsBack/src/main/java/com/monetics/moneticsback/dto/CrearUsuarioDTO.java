@@ -11,6 +11,7 @@ public class CrearUsuarioDTO {
     private String email;
     private String password;
     private String rol;
+    private Long idDepartamento;
 
     public String getNombre() {
         return nombre;
@@ -43,5 +44,13 @@ public class CrearUsuarioDTO {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    public Long getIdDepartamento() {
+        return idDepartamento;
+    }
+
+    public void setIdDepartamento(Long idDepartamento) {
+        this.idDepartamento = idDepartamento;
     }
 }
