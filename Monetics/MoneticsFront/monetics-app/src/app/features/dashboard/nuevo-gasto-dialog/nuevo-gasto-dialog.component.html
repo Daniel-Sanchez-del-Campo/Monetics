@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>Nuevo Gasto</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="gastoForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="descripcion" placeholder="Ej: Cena con cliente">
+      @if (gastoForm.get('descripcion')?.invalid && gastoForm.get('descripcion')?.touched) {
+        <mat-error>
+          @if (gastoForm.get('descripcion')?.hasError('required')) {
+            La descripción es requerida
+          }
+          @if (gastoForm.get('descripcion')?.hasError('minlength')) {
+            Mínimo 5 caracteres
+          }
+        </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Importe</mat-label>
+        <input matInput type="number" formControlName="importeOriginal" placeholder="0.00">
+        @if (gastoForm.get('importeOriginal')?.invalid && gastoForm.get('importeOriginal')?.touched) {
+          <mat-error>
+            @if (gastoForm.get('importeOriginal')?.hasError('required')) {
+              El importe es requerido
+            }
+            @if (gastoForm.get('importeOriginal')?.hasError('min')) {
+              Debe ser mayor que 0
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Moneda</mat-label>
+        <mat-select formControlName="monedaOriginal">
+          @for (moneda of monedas; track moneda) {
+            <mat-option [value]="moneda">{{ moneda }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Fecha del Gasto</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="fechaGasto">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    @if (errorMessage) {
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading">Cancelar</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || gastoForm.invalid">
+    @if (loading) {
+      Guardando...
+    } @else {
+      Guardar
+    }
+  </button>
+</mat-dialog-actions>

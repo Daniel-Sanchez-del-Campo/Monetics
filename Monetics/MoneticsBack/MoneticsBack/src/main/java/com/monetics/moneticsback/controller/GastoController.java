@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 /**
  * Controller REST encargado de los endpoints de gastos.
  *
@@ -17,6 +16,7 @@ import java.util.List;
  * - Trabaja exclusivamente con DTOs
  * - Delegada todo en el service
  */
+
 @RestController
 @RequestMapping("/api/gastos")
 public class GastoController {

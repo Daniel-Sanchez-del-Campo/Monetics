@@ -1,0 +1,65 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Iniciar Sesión</mat-card-title>
+      <mat-card-subtitle>Monetics - Sistema de Gestión de Gastos</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="usuario@ejemplo.com">
+          <mat-icon matPrefix>email</mat-icon>
+          @if (emailControl?.invalid && emailControl?.touched) {
+            <mat-error>
+              @if (emailControl?.hasError('required')) {
+                El email es requerido
+              }
+              @if (emailControl?.hasError('email')) {
+                Email inválido
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (passwordControl?.invalid && passwordControl?.touched) {
+            <mat-error>
+              @if (passwordControl?.hasError('required')) {
+                La contraseña es requerida
+              }
+              @if (passwordControl?.hasError('minlength')) {
+                Mínimo 6 caracteres
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        @if (errorMessage) {
+          <div class="error-message">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading">
+          @if (loading) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            Iniciar Sesión
+          }
+        </button>
+
+        <div class="register-link">
+          ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
