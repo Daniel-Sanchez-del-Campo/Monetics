@@ -17,6 +17,7 @@ public class CrearGastoDTO {
     private String monedaOriginal;
     private LocalDate fechaGasto;
     private Long idDepartamento;
+    private String imagenTicket;
 
     public String getDescripcion() {
         return descripcion;
@@ -56,5 +57,13 @@ public class CrearGastoDTO {
 
     public void setIdDepartamento(Long idDepartamento) {
         this.idDepartamento = idDepartamento;
+    }
+
+    public String getImagenTicket() {
+        return imagenTicket;
+    }
+
+    public void setImagenTicket(String imagenTicket) {
+        this.imagenTicket = imagenTicket;
     }
 }

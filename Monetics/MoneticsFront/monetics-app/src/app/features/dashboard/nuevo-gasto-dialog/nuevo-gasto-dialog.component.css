@@ -1,28 +1,212 @@
+/* ===== DIALOG GLASS STYLE ===== */
+/* NOTE: Dialog surface styles are in global styles.css (CDK overlay renders outside component) */
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+.title-icon {
+  color: #64b5f6;
+}
+
 .full-width {
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .row {
   display: flex;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .half-width {
   flex: 1;
 }
 
+/* Form fields */
+:host ::ng-deep .mat-mdc-text-field-wrapper {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-radius: 12px !important;
+}
+
+:host ::ng-deep .mdc-notched-outline__leading,
+:host ::ng-deep .mdc-notched-outline__notch,
+:host ::ng-deep .mdc-notched-outline__trailing {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+:host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__leading,
+:host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__notch,
+:host ::ng-deep .mdc-text-field--focused .mdc-notched-outline__trailing {
+  border-color: #64b5f6 !important;
+}
+
+:host ::ng-deep .mat-mdc-form-field-input-control {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .mat-mdc-floating-label {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+:host ::ng-deep .mat-mdc-form-field-icon-prefix .mat-icon {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+:host ::ng-deep .mat-mdc-select-value {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .mat-mdc-select-arrow {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
 .error-message {
-  color: #f44336;
+  color: #ff8a80;
   margin-bottom: 16px;
-  padding: 12px;
-  background-color: #ffebee;
-  border-radius: 4px;
+  padding: 12px 16px;
+  background-color: rgba(244, 67, 54, 0.15);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  border-radius: 12px;
   text-align: center;
+  font-size: 14px;
 }
 
 mat-dialog-content {
   min-width: 400px;
   padding: 20px 24px;
+}
+
+mat-dialog-actions {
+  padding: 12px 24px 20px !important;
+  gap: 12px;
+}
+
+.btn-cancel {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.btn-cancel .mat-icon {
+  margin-right: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
+  color: #ffffff !important;
+  padding: 6px 20px !important;
+}
+
+.btn-save .mat-icon {
+  margin-right: 4px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%) !important;
+  box-shadow: 0 6px 24px rgba(25, 118, 210, 0.5) !important;
+}
+
+/* ===== UPLOAD AREA ===== */
+.upload-area {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.upload-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.upload-dropzone {
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.upload-dropzone:hover {
+  border-color: #64b5f6;
+  background: rgba(100, 181, 246, 0.06);
+}
+
+.upload-dropzone.has-image {
+  border-color: rgba(76, 175, 80, 0.4);
+  background: rgba(76, 175, 80, 0.05);
+  padding: 12px;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-placeholder .mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.upload-placeholder p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+.upload-placeholder small {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+}
+
+.image-preview-container {
+  position: relative;
+  display: inline-block;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: rgba(244, 67, 54, 0.9) !important;
+  color: #ffffff !important;
+  width: 28px !important;
+  height: 28px !important;
+  line-height: 28px !important;
+}
+
+.remove-image-btn .mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.image-name {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
 }

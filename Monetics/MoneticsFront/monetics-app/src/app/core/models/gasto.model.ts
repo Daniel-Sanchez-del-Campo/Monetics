@@ -7,6 +7,7 @@ export interface Gasto {
   estadoGasto: EstadoGasto;
   fechaGasto: string;
   nombreDepartamento: string;
+  imagenTicket?: string;
 }
 
 export enum EstadoGasto {
@@ -20,4 +21,5 @@ export interface CrearGasto {
   importeOriginal: number;
   monedaOriginal: string;
   fechaGasto: string;
+  imagenTicket?: string;
 }

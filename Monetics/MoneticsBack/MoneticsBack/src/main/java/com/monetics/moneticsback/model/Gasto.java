@@ -47,6 +47,9 @@ public class Gasto {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
+    @Column(name = "imagen_ticket", columnDefinition = "LONGTEXT")
+    private String imagenTicket;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;

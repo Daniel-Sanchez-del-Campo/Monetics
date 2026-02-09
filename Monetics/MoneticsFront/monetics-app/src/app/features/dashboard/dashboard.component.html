@@ -1,25 +1,31 @@
 <div class="dashboard-container">
-  <mat-toolbar color="primary">
-    <span>Monetics - Gestión de Gastos</span>
-    <span class="spacer"></span>
-
-    @if (currentUser) {
-      <span class="user-info">
-        <mat-icon>person</mat-icon>
-        {{ currentUser.nombre }} ({{ currentUser.rol }})
-      </span>
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          <span>Cerrar Sesión</span>
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <mat-icon class="brand-icon">account_balance_wallet</mat-icon>
+      <span class="brand-name">Monetics</span>
+    </div>
+    <div class="toolbar-right">
+      @if (currentUser) {
+        <div class="user-info">
+          <mat-icon>person</mat-icon>
+          <span class="user-name">{{ currentUser.nombre }}</span>
+          <span class="user-role">{{ currentUser.rol }}</span>
+        </div>
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-btn">
+          <mat-icon>more_vert</mat-icon>
         </button>
-      </mat-menu>
-    }
-  </mat-toolbar>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar Sesion</span>
+          </button>
+        </mat-menu>
+      }
+    </div>
+  </div>
 
+  <!-- Content -->
   <div class="content">
     <div class="header">
       <h1>
@@ -30,8 +36,8 @@
         }
       </h1>
       @if (!authService.isManager) {
-        <button mat-raised-button color="primary" (click)="nuevoGasto()">
-          <mat-icon>add</mat-icon>
+        <button mat-raised-button color="primary" (click)="nuevoGasto()" class="btn-add">
+          <mat-icon>add_circle</mat-icon>
           Nuevo Gasto
         </button>
       }
@@ -43,25 +49,25 @@
       </div>
     } @else {
       @if (gastos.length === 0) {
-        <mat-card class="empty-state">
+        <mat-card class="glass-card empty-state">
           <mat-card-content>
-            <mat-icon>receipt_long</mat-icon>
+            <mat-icon class="empty-icon">receipt_long</mat-icon>
             <h2>No hay gastos registrados</h2>
             @if (!authService.isManager) {
               <p>Comienza agregando tu primer gasto</p>
-              <button mat-raised-button color="primary" (click)="nuevoGasto()">
-                <mat-icon>add</mat-icon>
+              <button mat-raised-button color="primary" (click)="nuevoGasto()" class="btn-add">
+                <mat-icon>add_circle</mat-icon>
                 Agregar Gasto
               </button>
             }
           </mat-card-content>
         </mat-card>
       } @else {
-        <mat-card>
+        <mat-card class="glass-card">
           <mat-card-content>
             <table mat-table [dataSource]="gastos" class="gastos-table">
               <ng-container matColumnDef="descripcion">
-                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                <th mat-header-cell *matHeaderCellDef>Descripcion</th>
                 <td mat-cell *matCellDef="let gasto">{{ gasto.descripcion }}</td>
               </ng-container>
 
@@ -80,16 +86,16 @@
               <ng-container matColumnDef="importeEur">
                 <th mat-header-cell *matHeaderCellDef>Importe EUR</th>
                 <td mat-cell *matCellDef="let gasto">
-                  {{ gasto.importeEur | number:'1.2-2' }} €
+                  {{ gasto.importeEur | number:'1.2-2' }} EUR
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="estadoGasto">
                 <th mat-header-cell *matHeaderCellDef>Estado</th>
                 <td mat-cell *matCellDef="let gasto">
-                  <mat-chip [color]="getEstadoColor(gasto.estadoGasto)" highlighted>
+                  <span class="estado-badge" [ngClass]="'estado-' + gasto.estadoGasto.toLowerCase()">
                     {{ gasto.estadoGasto }}
-                  </mat-chip>
+                  </span>
                 </td>
               </ng-container>
 

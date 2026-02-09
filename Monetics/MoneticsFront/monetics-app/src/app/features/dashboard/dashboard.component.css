@@ -1,21 +1,82 @@
 .dashboard-container {
   min-height: 100vh;
-  background-color: #f5f5f5;
 }
 
-.spacer {
-  flex: 1 1 auto;
+/* ===== TOOLBAR ===== */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-icon {
+  color: #64b5f6;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+}
+
+.brand-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .user-info {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-right: 16px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.user-info .mat-icon {
+  color: #64b5f6;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.user-name {
+  color: #e0e6ed;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.user-role {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.menu-btn .mat-icon {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===== CONTENT ===== */
 .content {
-  padding: 24px;
+  padding: 32px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -24,15 +85,36 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .header h1 {
   margin: 0;
+  font-family: 'Inter', sans-serif;
   font-size: 28px;
-  color: #333;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.5px;
 }
 
+/* ===== ADD BUTTON ===== */
+.btn-add {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%) !important;
+  color: #ffffff !important;
+  padding: 8px 20px !important;
+  height: 44px;
+}
+
+.btn-add .mat-icon {
+  margin-right: 6px;
+}
+
+.btn-add:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%) !important;
+  box-shadow: 0 6px 24px rgba(25, 118, 210, 0.5) !important;
+}
+
+/* ===== LOADING ===== */
 .loading {
   display: flex;
   justify-content: center;
@@ -40,37 +122,129 @@
   min-height: 400px;
 }
 
+:host ::ng-deep .loading mat-spinner circle {
+  stroke: #64b5f6 !important;
+}
+
+/* ===== GLASS CARDS ===== */
+.glass-card {
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  margin-bottom: 16px;
+  color: #e0e6ed;
+}
+
+/* ===== EMPTY STATE ===== */
 .empty-state {
   text-align: center;
   padding: 48px 24px;
 }
 
-.empty-state mat-icon {
+.empty-icon {
   font-size: 72px;
   width: 72px;
   height: 72px;
-  color: #ccc;
+  color: rgba(100, 181, 246, 0.3);
   margin-bottom: 16px;
 }
 
 .empty-state h2 {
-  color: #666;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
   margin: 16px 0 8px 0;
 }
 
 .empty-state p {
-  color: #999;
+  color: rgba(255, 255, 255, 0.4);
   margin-bottom: 24px;
 }
 
+/* ===== TABLE ===== */
 .gastos-table {
   width: 100%;
+  background: transparent !important;
 }
 
-.mat-mdc-row:hover {
-  background-color: #f9f9f9;
+:host ::ng-deep .mat-mdc-header-row {
+  background: rgba(255, 255, 255, 0.04) !important;
 }
 
-mat-card {
-  margin-bottom: 16px;
+:host ::ng-deep .mat-mdc-header-cell {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+:host ::ng-deep .mat-mdc-cell {
+  color: #e0e6ed !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+:host ::ng-deep .mat-mdc-row:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* ===== STATUS BADGES ===== */
+.estado-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.estado-aprobado {
+  background: rgba(76, 175, 80, 0.2);
+  color: #81c784;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.estado-rechazado {
+  background: rgba(244, 67, 54, 0.2);
+  color: #ef9a9a;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.estado-pendiente_aprobacion {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ffb74d;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.estado-borrador {
+  background: rgba(158, 158, 158, 0.2);
+  color: #bdbdbd;
+  border: 1px solid rgba(158, 158, 158, 0.3);
+}
+
+/* ===== MENU ===== */
+:host ::ng-deep .mat-mdc-menu-panel {
+  background: rgba(26, 42, 74, 0.95) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px !important;
+}
+
+:host ::ng-deep .mat-mdc-menu-item {
+  color: #e0e6ed !important;
+}
+
+:host ::ng-deep .mat-mdc-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+:host ::ng-deep .mat-mdc-menu-item .mat-icon {
+  color: #ef9a9a;
 }

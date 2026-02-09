@@ -25,6 +25,7 @@ public class GastoDTO {
     private EstadoGasto estadoGasto;
     private LocalDate fechaGasto;
     private String nombreDepartamento;
+    private String imagenTicket;
 
     // Getters y setters (sin Lombok a propósito para claridad en DTOs)
 
@@ -90,5 +91,13 @@ public class GastoDTO {
 
     public void setNombreDepartamento(String nombreDepartamento) {
         this.nombreDepartamento = nombreDepartamento;
+    }
+
+    public String getImagenTicket() {
+        return imagenTicket;
+    }
+
+    public void setImagenTicket(String imagenTicket) {
+        this.imagenTicket = imagenTicket;
     }
 }

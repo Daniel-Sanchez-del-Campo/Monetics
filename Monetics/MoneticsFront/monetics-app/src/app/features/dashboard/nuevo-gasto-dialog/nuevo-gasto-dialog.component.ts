@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService, GastoService } from '../../../core/services';
 
 @Component({
@@ -22,7 +23,8 @@ import { AuthService, GastoService } from '../../../core/services';
     MatButtonModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatIconModule
   ],
   templateUrl: './nuevo-gasto-dialog.component.html',
   styleUrl: './nuevo-gasto-dialog.component.css'
@@ -33,6 +35,12 @@ export class NuevoGastoDialogComponent {
   errorMessage = '';
 
   monedas = ['EUR', 'USD', 'GBP', 'JPY', 'MXN'];
+
+  imagePreview: string | null = null;
+  selectedFileName = '';
+  private imageBase64: string | null = null;
+
+  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
   constructor(
     private fb: FormBuilder,
@@ -48,6 +56,41 @@ export class NuevoGastoDialogComponent {
     });
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.errorMessage = 'La imagen no puede superar los 5MB';
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      this.errorMessage = 'Solo se permiten archivos de imagen';
+      return;
+    }
+
+    this.errorMessage = '';
+    this.selectedFileName = file.name;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      this.imagePreview = result;
+      this.imageBase64 = result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage(event: Event): void {
+    event.stopPropagation();
+    this.imagePreview = null;
+    this.imageBase64 = null;
+    this.selectedFileName = '';
+  }
+
   onSubmit(): void {
     if (this.gastoForm.invalid) {
       return;
@@ -60,10 +103,14 @@ export class NuevoGastoDialogComponent {
     this.errorMessage = '';
 
     const formValue = this.gastoForm.value;
-    const gasto = {
+    const gasto: any = {
       ...formValue,
       fechaGasto: this.formatDate(formValue.fechaGasto)
     };
+
+    if (this.imageBase64) {
+      gasto.imagenTicket = this.imageBase64;
+    }
 
     this.gastoService.crearGasto(currentUser.idUsuario, gasto).subscribe({
       next: () => {

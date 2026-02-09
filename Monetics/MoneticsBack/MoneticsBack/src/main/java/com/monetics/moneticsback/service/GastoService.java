@@ -75,6 +75,7 @@ public class GastoService {
         gasto.setFechaGasto(dto.getFechaGasto());
         gasto.setEstadoGasto(EstadoGasto.BORRADOR);
         gasto.setFechaCreacion(LocalDateTime.now());
+        gasto.setImagenTicket(dto.getImagenTicket());
         gasto.setUsuario(usuario);
         gasto.setDepartamento(usuario.getDepartamento());
 
@@ -182,6 +183,7 @@ public class GastoService {
         dto.setImporteEur(gasto.getImporteEur());
         dto.setEstadoGasto(gasto.getEstadoGasto());
         dto.setFechaGasto(gasto.getFechaGasto());
+        dto.setImagenTicket(gasto.getImagenTicket());
         dto.setNombreDepartamento(gasto.getDepartamento().getNombre());
 
         return dto;
