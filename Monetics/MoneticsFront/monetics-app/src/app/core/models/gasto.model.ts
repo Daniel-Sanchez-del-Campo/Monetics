@@ -11,7 +11,8 @@ export interface Gasto {
 }
 
 export enum EstadoGasto {
-  PENDIENTE = 'PENDIENTE',
+  BORRADOR = 'BORRADOR',
+  PENDIENTE_APROBACION = 'PENDIENTE_APROBACION',
   APROBADO = 'APROBADO',
   RECHAZADO = 'RECHAZADO'
 }

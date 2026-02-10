@@ -1,8 +1,11 @@
 <div class="register-container">
   <mat-card class="register-card">
+    <div class="logo-header">
+      <img src="assets/logo-monetics.svg" alt="Monetics" class="logo">
+    </div>
     <mat-card-header>
       <mat-card-title>Crear Cuenta</mat-card-title>
-      <mat-card-subtitle>Monetics - Gestion de Gastos</mat-card-subtitle>
+      <mat-card-subtitle>Gestión de Gastos Corporativos</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -17,7 +20,7 @@
                 El nombre es requerido
               }
               @if (nombreControl?.hasError('minlength')) {
-                Minimo 3 caracteres
+                Mínimo 3 caracteres
               }
             </mat-error>
           }
@@ -30,17 +33,17 @@
           @if (emailControl?.invalid && emailControl?.touched) {
             <mat-error>
               @if (emailControl?.hasError('required')) {
-                El email es requerido
+                Email es requerido
               }
               @if (emailControl?.hasError('email')) {
-                Email invalido
+                Email inválido
               }
             </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Contrasena</mat-label>
+          <mat-label>Contraseña</mat-label>
           <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
           <mat-icon matPrefix>lock</mat-icon>
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
@@ -49,10 +52,10 @@
           @if (passwordControl?.invalid && passwordControl?.touched) {
             <mat-error>
               @if (passwordControl?.hasError('required')) {
-                La contrasena es requerida
+                Contraseña requerida
               }
               @if (passwordControl?.hasError('minlength')) {
-                Minimo 6 caracteres
+                Mínimo 6 caracteres
               }
             </mat-error>
           }
@@ -73,7 +76,7 @@
         </button>
 
         <div class="login-link">
-          Ya tienes cuenta? <a routerLink="/login">Inicia sesion aqui</a>
+          ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a>
         </div>
       </form>
     </mat-card-content>

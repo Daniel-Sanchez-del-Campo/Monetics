@@ -1,8 +1,11 @@
 <div class="login-container">
   <mat-card class="login-card">
+    <div class="logo-header">
+      <img src="assets/logo-monetics.svg" alt="Monetics" class="logo">
+    </div>
     <mat-card-header>
-      <mat-card-title>Iniciar Sesion</mat-card-title>
-      <mat-card-subtitle>Monetics - Gestion de Gastos</mat-card-subtitle>
+      <mat-card-title>Iniciar Sesión</mat-card-title>
+      <mat-card-subtitle>Gestión de Gastos Corporativos</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -14,17 +17,17 @@
           @if (emailControl?.invalid && emailControl?.touched) {
             <mat-error>
               @if (emailControl?.hasError('required')) {
-                El email es requerido
+                Email requerido
               }
               @if (emailControl?.hasError('email')) {
-                Email invalido
+                Email inválido
               }
             </mat-error>
           }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Contrasena</mat-label>
+          <mat-label>Contraseña</mat-label>
           <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
           <mat-icon matPrefix>lock</mat-icon>
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
@@ -33,10 +36,10 @@
           @if (passwordControl?.invalid && passwordControl?.touched) {
             <mat-error>
               @if (passwordControl?.hasError('required')) {
-                La contrasena es requerida
+                Contraseña requerida
               }
               @if (passwordControl?.hasError('minlength')) {
-                Minimo 6 caracteres
+                Mínimo 6 caracteres
               }
             </mat-error>
           }
@@ -52,12 +55,12 @@
           @if (loading) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {
-            <span><mat-icon>login</mat-icon> Iniciar Sesion</span>
+            <span><mat-icon>login</mat-icon> Iniciar Sesión</span>
           }
         </button>
 
         <div class="register-link">
-          No tienes cuenta? <a routerLink="/register">Registrate aqui</a>
+          ¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a>
         </div>
       </form>
     </mat-card-content>

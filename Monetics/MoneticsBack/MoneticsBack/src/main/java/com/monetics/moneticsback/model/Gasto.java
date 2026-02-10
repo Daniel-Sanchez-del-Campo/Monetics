@@ -58,6 +58,6 @@ public class Gasto {
     @JoinColumn(name = "id_departamento", nullable = false)
     private Departamento departamento;
 
-    @OneToMany(mappedBy = "gasto", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "gasto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuditoriaGasto> auditorias;
 }

@@ -19,6 +19,17 @@
   color: #e0e6ed;
 }
 
+.logo-header {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.logo {
+  width: 220px;
+  height: auto;
+  filter: drop-shadow(0 2px 8px rgba(100, 181, 246, 0.3));
+}
+
 .login-card mat-card-title {
   color: #ffffff !important;
   font-family: 'Inter', sans-serif !important;

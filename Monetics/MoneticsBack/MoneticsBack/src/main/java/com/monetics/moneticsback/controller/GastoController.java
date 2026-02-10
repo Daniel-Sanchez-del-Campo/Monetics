@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 /**
  * Controller REST encargado de los endpoints de gastos.
  *
@@ -25,6 +26,11 @@ public class GastoController {
 
     public GastoController(GastoService gastoService) {
         this.gastoService = gastoService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GastoDTO>> obtenerTodosLosGastos() {
+        return ResponseEntity.ok(gastoService.obtenerTodosLosGastos());
     }
 
     @GetMapping("/usuario/{idUsuario}")
@@ -54,5 +60,45 @@ public class GastoController {
                 gastoService.crearGasto(dto, idUsuario),
                 HttpStatus.CREATED
         );
+    }
+
+    @DeleteMapping("/{idGasto}")
+    public ResponseEntity<Void> eliminarGasto(@PathVariable Long idGasto) {
+        gastoService.eliminarGasto(idGasto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/eliminar-batch")
+    public ResponseEntity<Void> eliminarGastos(@RequestBody List<Long> ids) {
+        gastoService.eliminarGastos(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{idGasto}/enviar-revision")
+    public ResponseEntity<Void> enviarARevision(
+            @PathVariable Long idGasto,
+            @RequestParam Long idUsuario
+    ) {
+        gastoService.enviarGastoARevision(idGasto, idUsuario);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{idGasto}/aprobar")
+    public ResponseEntity<Void> aprobarGasto(
+            @PathVariable Long idGasto,
+            @RequestParam Long idManager
+    ) {
+        gastoService.aprobarGasto(idGasto, idManager);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{idGasto}/rechazar")
+    public ResponseEntity<Void> rechazarGasto(
+            @PathVariable Long idGasto,
+            @RequestParam Long idManager,
+            @RequestBody Map<String, String> body
+    ) {
+        gastoService.rechazarGasto(idGasto, idManager, body.get("comentario"));
+        return ResponseEntity.ok().build();
     }
 }

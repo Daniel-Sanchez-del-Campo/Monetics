@@ -13,6 +13,7 @@ import com.monetics.moneticsback.repository.GastoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +61,13 @@ public class GastoService {
                 .collect(Collectors.toList());
     }
 
+    public List<GastoDTO> obtenerTodosLosGastos() {
+        return gastoRepository.findAll()
+                .stream()
+                .map(this::mapearAGastoDTO)
+                .collect(Collectors.toList());
+    }
+
     /* ============================
        CREACIÓN
        ============================ */
@@ -76,10 +84,32 @@ public class GastoService {
         gasto.setEstadoGasto(EstadoGasto.BORRADOR);
         gasto.setFechaCreacion(LocalDateTime.now());
         gasto.setImagenTicket(dto.getImagenTicket());
+
+        // Tipo de cambio: si es EUR => 1.0, si no => 1.0 por defecto (pendiente de integrar API de cambio)
+        BigDecimal tipoCambio = BigDecimal.ONE;
+        gasto.setTipoCambio(tipoCambio);
+        gasto.setImporteEur(dto.getImporteOriginal().multiply(tipoCambio));
+
         gasto.setUsuario(usuario);
         gasto.setDepartamento(usuario.getDepartamento());
 
         return mapearAGastoDTO(gastoRepository.save(gasto));
+    }
+
+    /* ============================
+       ELIMINACIÓN
+       ============================ */
+
+    @Transactional
+    public void eliminarGasto(Long idGasto) {
+        Gasto gasto = obtenerGastoValido(idGasto);
+        gastoRepository.delete(gasto);
+    }
+
+    @Transactional
+    public void eliminarGastos(List<Long> ids) {
+        List<Gasto> gastos = gastoRepository.findAllById(ids);
+        gastoRepository.deleteAll(gastos);
     }
 
     /* ============================
@@ -117,7 +147,7 @@ public class GastoService {
         Usuario manager = usuarioService.obtenerUsuarioEntidad(idManager);
 
         validarManager(manager);
-        validarEstado(gasto, EstadoGasto.PENDIENTE_APROBACION);
+        validarEstadoParaAprobacion(gasto);
 
         cambiarEstado(
                 gasto,
@@ -139,7 +169,7 @@ public class GastoService {
         Usuario manager = usuarioService.obtenerUsuarioEntidad(idManager);
 
         validarManager(manager);
-        validarEstado(gasto, EstadoGasto.PENDIENTE_APROBACION);
+        validarEstadoParaAprobacion(gasto);
 
         cambiarEstado(
                 gasto,
@@ -197,9 +227,9 @@ public class GastoService {
     }
 
     private void validarManager(Usuario usuario) {
-        if (usuario.getRol() != RolUsuario.ROLE_MANAGER) {
+        if (usuario.getRol() != RolUsuario.ROLE_MANAGER && usuario.getRol() != RolUsuario.ROLE_ADMIN) {
             throw new AccesoNoPermitidoException(
-                    "Solo un manager puede realizar esta acción"
+                    "Solo un manager o admin puede realizar esta acción"
             );
         }
     }
@@ -208,6 +238,14 @@ public class GastoService {
         if (gasto.getEstadoGasto() != estadoEsperado) {
             throw new OperacionNoPermitidaException(
                     "El gasto no está en el estado correcto"
+            );
+        }
+    }
+
+    private void validarEstadoParaAprobacion(Gasto gasto) {
+        if (gasto.getEstadoGasto() == EstadoGasto.APROBADO || gasto.getEstadoGasto() == EstadoGasto.RECHAZADO) {
+            throw new OperacionNoPermitidaException(
+                    "No se puede modificar un gasto ya aprobado o rechazado"
             );
         }
     }

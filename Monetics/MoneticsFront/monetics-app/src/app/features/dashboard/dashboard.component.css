@@ -8,31 +8,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.132);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.132);
 }
 
 .toolbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.brand-icon {
-  color: #64b5f6;
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-}
-
-.brand-name {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 22px;
-  color: #ffffff;
-  letter-spacing: -0.5px;
+.toolbar-logo {
+  height: 36px;
+  width: auto;
+  filter: brightness(1.3) drop-shadow(0 1px 4px rgba(100, 181, 246, 0.2));
 }
 
 .toolbar-right {
@@ -86,6 +76,10 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 28px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .header h1 {
@@ -247,4 +241,180 @@
 
 :host ::ng-deep .mat-mdc-menu-item .mat-icon {
   color: #ef9a9a;
+}
+
+/* ===== HEADER ACTIONS ===== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ===== DELETE BUTTON ===== */
+.btn-delete {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+  color: #ffffff !important;
+  padding: 8px 20px !important;
+  height: 44px;
+}
+
+.btn-delete .mat-icon {
+  margin-right: 6px;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ef5350 0%, #d32f2f 100%) !important;
+  box-shadow: 0 6px 24px rgba(211, 47, 47, 0.5) !important;
+}
+
+/* ===== SELECTED ROW ===== */
+:host ::ng-deep .mat-mdc-row.selected-row {
+  background: rgba(25, 118, 210, 0.15) !important;
+}
+
+:host ::ng-deep .mat-mdc-row.selected-row:hover {
+  background: rgba(25, 118, 210, 0.2) !important;
+}
+
+/* ===== CHECKBOX THEME ===== */
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox__background {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+:host ::ng-deep .mat-mdc-checkbox.mat-primary .mdc-checkbox--selected .mdc-checkbox__background {
+  background-color: #1976d2 !important;
+  border-color: #1976d2 !important;
+}
+
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox__checkmark {
+  color: #ffffff !important;
+}
+
+:host ::ng-deep .mat-mdc-checkbox .mdc-checkbox__mixedmark {
+  border-color: #ffffff !important;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-buttons {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+:host ::ng-deep .btn-action.mat-mdc-icon-button {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:host ::ng-deep .btn-action.mat-mdc-icon-button .mat-mdc-button-touch-target {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+:host ::ng-deep .btn-action .mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-aprobar .mat-icon {
+  color: #81c784;
+}
+
+.btn-aprobar:hover {
+  background: rgba(76, 175, 80, 0.15) !important;
+}
+
+.btn-rechazar .mat-icon {
+  color: #ef9a9a;
+}
+
+.btn-rechazar:hover {
+  background: rgba(244, 67, 54, 0.15) !important;
+}
+
+.btn-enviar .mat-icon {
+  color: #64b5f6;
+}
+
+.btn-enviar:hover {
+  background: rgba(100, 181, 246, 0.15) !important;
+}
+
+/* ===== DESCRIPCION CELL ===== */
+.descripcion-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+:host ::ng-deep .btn-ver-ticket.mat-mdc-icon-button {
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:host ::ng-deep .btn-ver-ticket .mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #64b5f6;
+}
+
+.btn-ver-ticket:hover {
+  background: rgba(100, 181, 246, 0.15) !important;
+}
+
+/* ===== IMAGE OVERLAY ===== */
+.imagen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.imagen-overlay-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  cursor: default;
+}
+
+.imagen-ticket-full {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+}
+
+.imagen-close {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  z-index: 1001;
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(8px);
+}
+
+.imagen-close .mat-icon {
+  color: #ffffff;
 }

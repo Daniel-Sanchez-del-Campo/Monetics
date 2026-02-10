@@ -21,4 +21,24 @@ export class GastoService {
   crearGasto(idUsuario: number, gasto: CrearGasto): Observable<Gasto> {
     return this.apiService.post<Gasto>(`/gastos/usuario/${idUsuario}`, gasto);
   }
+
+  eliminarGastos(ids: number[]): Observable<void> {
+    return this.apiService.post<void>('/gastos/eliminar-batch', ids);
+  }
+
+  obtenerTodosGastos(): Observable<Gasto[]> {
+    return this.apiService.get<Gasto[]>('/gastos');
+  }
+
+  enviarARevision(idGasto: number, idUsuario: number): Observable<void> {
+    return this.apiService.put<void>(`/gastos/${idGasto}/enviar-revision?idUsuario=${idUsuario}`, {});
+  }
+
+  aprobarGasto(idGasto: number, idManager: number): Observable<void> {
+    return this.apiService.put<void>(`/gastos/${idGasto}/aprobar?idManager=${idManager}`, {});
+  }
+
+  rechazarGasto(idGasto: number, idManager: number, comentario: string): Observable<void> {
+    return this.apiService.put<void>(`/gastos/${idGasto}/rechazar?idManager=${idManager}`, { comentario });
+  }
 }
