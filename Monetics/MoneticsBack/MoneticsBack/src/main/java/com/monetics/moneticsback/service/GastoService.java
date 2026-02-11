@@ -32,15 +32,18 @@ public class GastoService {
     private final GastoRepository gastoRepository;
     private final UsuarioService usuarioService;
     private final AuditoriaGastoService auditoriaGastoService;
+    private final ExchangeRateService exchangeRateService;
 
     public GastoService(
             GastoRepository gastoRepository,
             UsuarioService usuarioService,
-            AuditoriaGastoService auditoriaGastoService
+            AuditoriaGastoService auditoriaGastoService,
+            ExchangeRateService exchangeRateService
     ) {
         this.gastoRepository = gastoRepository;
         this.usuarioService = usuarioService;
         this.auditoriaGastoService = auditoriaGastoService;
+        this.exchangeRateService = exchangeRateService;
     }
 
     /* ============================
@@ -85,10 +88,10 @@ public class GastoService {
         gasto.setFechaCreacion(LocalDateTime.now());
         gasto.setImagenTicket(dto.getImagenTicket());
 
-        // Tipo de cambio: si es EUR => 1.0, si no => 1.0 por defecto (pendiente de integrar API de cambio)
-        BigDecimal tipoCambio = BigDecimal.ONE;
+        // Conversión de divisa usando API ExchangeRate
+        BigDecimal tipoCambio = exchangeRateService.obtenerTipoCambioAEur(dto.getMonedaOriginal());
         gasto.setTipoCambio(tipoCambio);
-        gasto.setImporteEur(dto.getImporteOriginal().multiply(tipoCambio));
+        gasto.setImporteEur(exchangeRateService.convertirAEur(dto.getImporteOriginal(), dto.getMonedaOriginal()));
 
         gasto.setUsuario(usuario);
         gasto.setDepartamento(usuario.getDepartamento());

@@ -17,7 +17,7 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
-            <span>Cerrar sesión</span>
+            <span>Cerrar sesion</span>
           </button>
         </mat-menu>
       }
@@ -52,6 +52,133 @@
       </div>
     </div>
 
+    <!-- KPIs -->
+    @if (dashboardData) {
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-blue">receipt_long</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.totalGastos }}</span>
+            <span class="kpi-label">Total gastos</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-orange">hourglass_top</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.totalPendienteReembolso | number:'1.2-2' }} EUR</span>
+            <span class="kpi-label">Pendiente reembolso</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-green">trending_up</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.totalGastosMes | number:'1.2-2' }} EUR</span>
+            <span class="kpi-label">Gastos este mes</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-yellow">pending_actions</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.gastosPendientes }}</span>
+            <span class="kpi-label">Pendientes aprobacion</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas de presupuesto -->
+      @if (dashboardData.alertasPresupuesto.length > 0) {
+        <div class="alertas-section">
+          @for (alerta of dashboardData.alertasPresupuesto; track alerta.departamento) {
+            <div class="alerta-card" [class.alerta-critica]="alerta.porcentajeUsado >= 100">
+              <mat-icon class="alerta-icon">warning</mat-icon>
+              <div class="alerta-info">
+                <strong>{{ alerta.departamento }}</strong>
+                <span>{{ alerta.gastoActual | number:'1.2-2' }} / {{ alerta.presupuestoMensual | number:'1.2-2' }} EUR ({{ alerta.porcentajeUsado | number:'1.0-0' }}%)</span>
+              </div>
+              <div class="alerta-barra">
+                <div class="alerta-progreso" [style.width.%]="alerta.porcentajeUsado > 100 ? 100 : alerta.porcentajeUsado"></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <mat-card class="glass-card chart-card">
+          <mat-card-content>
+            <h3 class="chart-title">Gastos por Departamento</h3>
+            <div class="chart-container">
+              <canvas baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                type="bar">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <mat-card class="glass-card chart-card">
+          <mat-card-content>
+            <h3 class="chart-title">Estado de Gastos</h3>
+            <div class="chart-container">
+              <canvas baseChart
+                [data]="doughnutChartData"
+                [options]="doughnutChartOptions"
+                type="doughnut">
+              </canvas>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    }
+
+    <!-- Admin: Configurar presupuestos -->
+    @if (authService.isAdmin && departamentos.length > 0) {
+      <mat-card class="glass-card presupuesto-card">
+        <mat-card-content>
+          <h3 class="section-title">
+            <mat-icon>account_balance</mat-icon>
+            Presupuestos por Departamento
+          </h3>
+          <div class="presupuesto-grid">
+            @for (depto of departamentos; track depto.idDepartamento) {
+              <div class="presupuesto-item">
+                @if (editingDepto?.idDepartamento === depto.idDepartamento) {
+                  <div class="presupuesto-edit">
+                    <strong>{{ depto.nombre }}</strong>
+                    <div class="edit-fields">
+                      <mat-form-field appearance="outline" class="edit-field">
+                        <mat-label>Mensual (EUR)</mat-label>
+                        <input matInput type="number" [(ngModel)]="editPresMensual">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="edit-field">
+                        <mat-label>Anual (EUR)</mat-label>
+                        <input matInput type="number" [(ngModel)]="editPresAnual">
+                      </mat-form-field>
+                    </div>
+                    <div class="edit-actions">
+                      <button mat-raised-button class="btn-add" (click)="guardarPresupuesto()">Guardar</button>
+                      <button mat-button (click)="cancelarEdicion()" style="color: #e0e6ed;">Cancelar</button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="presupuesto-display">
+                    <strong>{{ depto.nombre }}</strong>
+                    <span class="presupuesto-valor">Mensual: {{ depto.presupuestoMensual | number:'1.2-2' }} EUR</span>
+                    <span class="presupuesto-valor">Anual: {{ depto.presupuestoAnual | number:'1.2-2' }} EUR</span>
+                    <button mat-icon-button class="btn-action btn-enviar" (click)="editarPresupuesto(depto)" title="Editar">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    <!-- Tabla de gastos -->
     @if (loading) {
       <div class="loading">
         <mat-spinner></mat-spinner>
@@ -99,7 +226,7 @@
               }
 
               <ng-container matColumnDef="descripcion">
-                <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                <th mat-header-cell *matHeaderCellDef>Descripcion</th>
                 <td mat-cell *matCellDef="let gasto">
                   <div class="descripcion-cell">
                     <span>{{ gasto.descripcion }}</span>
@@ -145,7 +272,7 @@
                 <td mat-cell *matCellDef="let gasto">
                   <div class="action-buttons">
                     @if (!authService.isAdmin && !authService.isManager && gasto.estadoGasto === 'BORRADOR') {
-                      <button mat-icon-button class="btn-action btn-enviar" (click)="$event.stopPropagation(); enviarARevision(gasto)" title="Enviar a revisión">
+                      <button mat-icon-button class="btn-action btn-enviar" (click)="$event.stopPropagation(); enviarARevision(gasto)" title="Enviar a revision">
                         <mat-icon>send</mat-icon>
                       </button>
                     }

@@ -4,6 +4,10 @@ import com.monetics.moneticsback.model.Departamento;
 import com.monetics.moneticsback.repository.DepartamentoRepository;
 import org.springframework.stereotype.Service;
 
+import com.monetics.moneticsback.exception.RecursoNoEncontradoException;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +54,14 @@ public class DepartamentoService {
      */
     public Optional<Departamento> obtenerPorId(Long idDepartamento) {
         return departamentoRepository.findById(idDepartamento);
+    }
+
+    @Transactional
+    public Departamento actualizarPresupuesto(Long idDepartamento, BigDecimal presupuestoMensual, BigDecimal presupuestoAnual) {
+        Departamento depto = departamentoRepository.findById(idDepartamento)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Departamento no encontrado"));
+        depto.setPresupuestoMensual(presupuestoMensual);
+        depto.setPresupuestoAnual(presupuestoAnual);
+        return departamentoRepository.save(depto);
     }
 }
