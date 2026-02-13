@@ -86,11 +86,19 @@ export class DashboardComponent implements OnInit {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: { labels: { color: '#e0e6ed' } }
+      legend: { labels: { color: '#e0e6ed', font: { family: 'Inter', size: 12 }, padding: 16 } }
     },
     scales: {
-      x: { ticks: { color: '#a0aec0' }, grid: { color: 'rgba(255,255,255,0.06)' } },
-      y: { ticks: { color: '#a0aec0' }, grid: { color: 'rgba(255,255,255,0.06)' } }
+      x: {
+        ticks: { color: 'rgba(255,255,255,0.45)', font: { family: 'Inter', size: 11 } },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        border: { color: 'rgba(255,255,255,0.08)' }
+      },
+      y: {
+        ticks: { color: 'rgba(255,255,255,0.45)', font: { family: 'Inter', size: 11 } },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        border: { color: 'rgba(255,255,255,0.08)' }
+      }
     }
   };
 
@@ -98,8 +106,9 @@ export class DashboardComponent implements OnInit {
   doughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+    cutout: '55%',
     plugins: {
-      legend: { position: 'bottom', labels: { color: '#e0e6ed', padding: 16 } }
+      legend: { position: 'bottom', labels: { color: '#e0e6ed', font: { family: 'Inter', size: 12 }, padding: 20, usePointStyle: true, pointStyle: 'circle' } }
     }
   };
 
@@ -107,8 +116,9 @@ export class DashboardComponent implements OnInit {
   categoryChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
+    cutout: '55%',
     plugins: {
-      legend: { position: 'bottom', labels: { color: '#e0e6ed', padding: 16 } }
+      legend: { position: 'bottom', labels: { color: '#e0e6ed', font: { family: 'Inter', size: 12 }, padding: 20, usePointStyle: true, pointStyle: 'circle' } }
     }
   };
 
@@ -175,16 +185,18 @@ export class DashboardComponent implements OnInit {
         {
           data: data.gastosPorDepartamento.map(d => d.totalGastado),
           label: 'Gastado',
-          backgroundColor: 'rgba(100, 181, 246, 0.7)',
-          borderColor: '#64b5f6',
-          borderWidth: 1
+          backgroundColor: 'rgba(100, 181, 246, 0.6)',
+          borderColor: 'rgba(100, 181, 246, 0.8)',
+          borderWidth: 1,
+          borderRadius: 4
         },
         {
           data: data.gastosPorDepartamento.map(d => d.presupuestoMensual),
           label: 'Presupuesto mensual',
-          backgroundColor: 'rgba(255, 255, 255, 0.15)',
-          borderColor: 'rgba(255, 255, 255, 0.4)',
-          borderWidth: 1
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: 'rgba(255, 255, 255, 0.25)',
+          borderWidth: 1,
+          borderRadius: 4
         }
       ]
     };
@@ -194,9 +206,10 @@ export class DashboardComponent implements OnInit {
       labels: ['Pendientes', 'Aprobados', 'Rechazados'],
       datasets: [{
         data: [data.gastosPendientes, data.gastosAprobados, data.gastosRechazados],
-        backgroundColor: ['rgba(255, 183, 77, 0.8)', 'rgba(129, 199, 132, 0.8)', 'rgba(239, 154, 154, 0.8)'],
-        borderColor: ['#ffb74d', '#81c784', '#ef9a9a'],
-        borderWidth: 2
+        backgroundColor: ['rgba(255, 183, 77, 0.7)', 'rgba(129, 199, 132, 0.7)', 'rgba(239, 154, 154, 0.7)'],
+        borderColor: 'transparent',
+        borderWidth: 0,
+        spacing: 2
       }]
     };
 
@@ -206,9 +219,10 @@ export class DashboardComponent implements OnInit {
         labels: data.gastosPorCategoria.map(c => c.categoria),
         datasets: [{
           data: data.gastosPorCategoria.map(c => c.totalGastado),
-          backgroundColor: data.gastosPorCategoria.map(c => c.color + 'cc'),
-          borderColor: data.gastosPorCategoria.map(c => c.color),
-          borderWidth: 2
+          backgroundColor: data.gastosPorCategoria.map(c => c.color + 'b3'),
+          borderColor: 'transparent',
+          borderWidth: 0,
+          spacing: 2
         }]
       };
     }

@@ -1,27 +1,85 @@
 /* ===== GLOBAL STYLES - MONETICS ===== */
+/* Inspired by Zendesk's clean, professional design language */
+
+:root {
+  /* Color tokens */
+  --m-bg-primary: #0a1628;
+  --m-bg-secondary: #1a2a4a;
+  --m-bg-tertiary: #0d2137;
+  --m-text-primary: #e0e6ed;
+  --m-text-white: #ffffff;
+  --m-text-muted: rgba(255, 255, 255, 0.5);
+  --m-text-subtle: rgba(255, 255, 255, 0.4);
+  --m-accent: #64b5f6;
+  --m-accent-hover: #90caf9;
+  --m-accent-glow: rgba(100, 181, 246, 0.25);
+  --m-brand: #1976d2;
+  --m-brand-light: #2196f3;
+  --m-success: #81c784;
+  --m-warning: #ffb74d;
+  --m-danger: #ef9a9a;
+  --m-glass-bg: rgba(255, 255, 255, 0.06);
+  --m-glass-bg-hover: rgba(255, 255, 255, 0.09);
+  --m-glass-border: rgba(255, 255, 255, 0.1);
+  --m-glass-border-light: rgba(255, 255, 255, 0.15);
+
+  /* Spacing (8px grid) */
+  --m-space-xs: 4px;
+  --m-space-sm: 8px;
+  --m-space-md: 12px;
+  --m-space-lg: 16px;
+  --m-space-xl: 24px;
+  --m-space-2xl: 32px;
+
+  /* Radius */
+  --m-radius-sm: 8px;
+  --m-radius-md: 12px;
+  --m-radius-lg: 16px;
+  --m-radius-xl: 20px;
+  --m-radius-full: 50%;
+
+  /* Transitions (Zendesk-style smooth) */
+  --m-transition-fast: 0.15s ease-in-out;
+  --m-transition: 0.2s ease-in-out;
+  --m-transition-slow: 0.3s ease-in-out;
+
+  /* Shadows */
+  --m-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --m-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --m-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --m-shadow-glow: 0 4px 20px rgba(25, 118, 210, 0.35);
+}
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 40%, #0d2137 100%);
+  background: linear-gradient(135deg, var(--m-bg-primary) 0%, var(--m-bg-secondary) 40%, var(--m-bg-tertiary) 100%);
   background-attachment: fixed;
-  color: #e0e6ed;
+  color: var(--m-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 160, 255, 0.3);
-  border-radius: 4px;
+  background: rgba(100, 160, 255, 0.2);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 160, 255, 0.5);
+  background: rgba(100, 160, 255, 0.4);
+}
+
+/* ===== SELECTION ===== */
+::selection {
+  background: rgba(100, 181, 246, 0.3);
+  color: #ffffff;
 }
 
 /* ===== MATERIAL OVERRIDES ===== */
@@ -30,123 +88,134 @@ html, body {
   font-family: 'Inter', sans-serif !important;
 }
 
-/* Buttons - rounded with hover transitions */
+/* Buttons - refined with Zendesk-style transitions */
 .mat-mdc-raised-button,
 .mat-mdc-flat-button,
 .mat-mdc-outlined-button {
-  border-radius: 12px !important;
+  border-radius: var(--m-radius-md) !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
-  letter-spacing: 0.3px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  letter-spacing: 0.2px !important;
+  transition: all var(--m-transition) !important;
 }
 
 .mat-mdc-raised-button:hover:not(:disabled),
 .mat-mdc-flat-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--m-shadow-glow) !important;
 }
 
 .mat-mdc-raised-button:active:not(:disabled),
 .mat-mdc-flat-button:active:not(:disabled) {
   transform: translateY(0);
+  transition: transform 0.1s ease !important;
 }
 
 .mat-mdc-icon-button {
-  transition: all 0.2s ease !important;
+  transition: all var(--m-transition-fast) !important;
 }
 
 .mat-mdc-icon-button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .mat-mdc-button {
-  border-radius: 12px !important;
+  border-radius: var(--m-radius-md) !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 500 !important;
-  transition: all 0.2s ease !important;
+  transition: all var(--m-transition-fast) !important;
 }
 
 .mat-mdc-button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 /* Links */
 a {
-  color: #64b5f6;
+  color: var(--m-accent);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color var(--m-transition-fast);
 }
 
 a:hover {
-  color: #90caf9;
-  text-decoration: underline;
+  color: var(--m-accent-hover);
 }
 
 /* ===== DIALOG OVERLAY (rendered outside component) ===== */
 .mat-mdc-dialog-container .mdc-dialog__surface {
-  background: rgba(20, 35, 65, 0.95) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px !important;
-  color: #e0e6ed;
+  background: rgba(15, 27, 61, 0.97) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--m-glass-border);
+  border-radius: var(--m-radius-xl) !important;
+  color: var(--m-text-primary);
+  box-shadow: var(--m-shadow-lg), 0 0 60px rgba(0, 0, 0, 0.3) !important;
 }
 
 .cdk-overlay-dark-backdrop {
-  background: rgba(0, 0, 0, 0.6) !important;
+  background: rgba(0, 0, 0, 0.65) !important;
+  backdrop-filter: blur(2px);
 }
 
 /* Datepicker overlay */
 .mat-datepicker-content {
-  background: rgba(20, 35, 65, 0.98) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px !important;
-  color: #e0e6ed !important;
+  background: rgba(15, 27, 61, 0.98) !important;
+  border: 1px solid var(--m-glass-border);
+  border-radius: var(--m-radius-lg) !important;
+  color: var(--m-text-primary) !important;
+  box-shadow: var(--m-shadow-lg) !important;
 }
 
 .mat-datepicker-content .mat-calendar-body-cell-content {
-  color: #e0e6ed;
+  color: var(--m-text-primary);
+  transition: background var(--m-transition-fast);
 }
 
 .mat-datepicker-content .mat-calendar-body-selected {
-  background-color: #1976d2 !important;
+  background-color: var(--m-brand) !important;
   color: #ffffff !important;
 }
 
 .mat-datepicker-content .mat-calendar-body-today:not(.mat-calendar-body-selected) {
-  border-color: #64b5f6 !important;
+  border-color: var(--m-accent) !important;
 }
 
 .mat-datepicker-content .mat-calendar-table-header,
 .mat-datepicker-content .mat-calendar-body-label {
-  color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--m-text-muted) !important;
 }
 
 .mat-datepicker-content .mat-calendar-arrow {
-  fill: #e0e6ed !important;
+  fill: var(--m-text-primary) !important;
 }
 
 .mat-datepicker-content .mat-calendar-previous-button,
-.mat-datepicker-content .mat-calendar-next-button {
-  color: #e0e6ed !important;
-}
-
+.mat-datepicker-content .mat-calendar-next-button,
 .mat-datepicker-content .mat-calendar-period-button {
-  color: #e0e6ed !important;
+  color: var(--m-text-primary) !important;
 }
 
 /* Select panel overlay */
 .mat-mdc-select-panel {
-  background: rgba(20, 35, 65, 0.98) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px !important;
+  background: rgba(15, 27, 61, 0.98) !important;
+  border: 1px solid var(--m-glass-border);
+  border-radius: var(--m-radius-md) !important;
+  box-shadow: var(--m-shadow-lg) !important;
 }
 
 .mat-mdc-option {
-  color: #e0e6ed !important;
+  color: var(--m-text-primary) !important;
+  transition: background var(--m-transition-fast) !important;
 }
 
 .mat-mdc-option:hover,
 .mat-mdc-option.mdc-list-item--selected:not(.mat-mdc-option-multiple) {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Snackbar / toast */
+.mat-mdc-snack-bar-container .mdc-snackbar__surface {
+  background: rgba(15, 27, 61, 0.95) !important;
+  border: 1px solid var(--m-glass-border);
+  border-radius: var(--m-radius-md) !important;
 }

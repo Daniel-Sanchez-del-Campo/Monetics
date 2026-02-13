@@ -1,28 +1,28 @@
 ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
   background: linear-gradient(135deg, #0f1b3d 0%, #1a2a4a 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px !important;
+  border: 1px solid var(--m-glass-border);
+  border-radius: var(--m-radius-lg) !important;
 }
 
 .dialog-title {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #e0e6ed;
+  color: var(--m-text-primary);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
 }
 
 .title-icon {
-  color: #64b5f6;
+  color: var(--m-accent);
 }
 
 .gasto-desc {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--m-text-muted);
   font-size: 14px;
   margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: var(--m-space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .loading-container {
@@ -32,21 +32,21 @@
 }
 
 :host ::ng-deep .loading-container mat-spinner circle {
-  stroke: #64b5f6 !important;
+  stroke: var(--m-accent) !important;
 }
 
 .empty-historial {
   text-align: center;
-  padding: 32px 0;
-  color: rgba(255, 255, 255, 0.4);
+  padding: var(--m-space-2xl) 0;
+  color: var(--m-text-subtle);
 }
 
 .empty-historial .mat-icon {
   font-size: 40px;
   width: 40px;
   height: 40px;
-  margin-bottom: 8px;
-  color: rgba(100, 181, 246, 0.4);
+  margin-bottom: var(--m-space-sm);
+  color: rgba(100, 181, 246, 0.3);
 }
 
 /* Timeline */
@@ -57,7 +57,7 @@
 
 .timeline-item {
   display: flex;
-  gap: 16px;
+  gap: var(--m-space-lg);
   min-height: 70px;
 }
 
@@ -72,11 +72,16 @@
 .timeline-dot {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--m-radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: transform var(--m-transition-fast);
+}
+
+.timeline-dot:hover {
+  transform: scale(1.05);
 }
 
 .timeline-dot .mat-icon {
@@ -86,35 +91,35 @@
 }
 
 .timeline-dot.estado-aprobado {
-  background: rgba(76, 175, 80, 0.2);
-  border: 2px solid rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.15);
+  border: 2px solid rgba(76, 175, 80, 0.4);
 }
 
 .timeline-dot.estado-aprobado .mat-icon {
-  color: #81c784;
+  color: var(--m-success);
 }
 
 .timeline-dot.estado-rechazado {
-  background: rgba(244, 67, 54, 0.2);
-  border: 2px solid rgba(244, 67, 54, 0.5);
+  background: rgba(244, 67, 54, 0.15);
+  border: 2px solid rgba(244, 67, 54, 0.4);
 }
 
 .timeline-dot.estado-rechazado .mat-icon {
-  color: #ef9a9a;
+  color: var(--m-danger);
 }
 
 .timeline-dot.estado-pendiente {
-  background: rgba(255, 152, 0, 0.2);
-  border: 2px solid rgba(255, 152, 0, 0.5);
+  background: rgba(255, 152, 0, 0.15);
+  border: 2px solid rgba(255, 152, 0, 0.4);
 }
 
 .timeline-dot.estado-pendiente .mat-icon {
-  color: #ffb74d;
+  color: var(--m-warning);
 }
 
 .timeline-dot.estado-borrador {
-  background: rgba(158, 158, 158, 0.2);
-  border: 2px solid rgba(158, 158, 158, 0.5);
+  background: rgba(158, 158, 158, 0.15);
+  border: 2px solid rgba(158, 158, 158, 0.4);
 }
 
 .timeline-dot.estado-borrador .mat-icon {
@@ -124,8 +129,8 @@
 .timeline-line {
   width: 2px;
   flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 4px 0;
+  background: rgba(255, 255, 255, 0.08);
+  margin: var(--m-space-xs) 0;
 }
 
 .timeline-content {
@@ -141,34 +146,34 @@
 }
 
 .timeline-estado {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   padding: 2px 10px;
-  border-radius: 12px;
+  border-radius: 6px;
 }
 
 .timeline-estado.estado-aprobado {
-  background: rgba(76, 175, 80, 0.2);
-  color: #81c784;
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--m-success);
 }
 
 .timeline-estado.estado-rechazado {
-  background: rgba(244, 67, 54, 0.2);
-  color: #ef9a9a;
+  background: rgba(244, 67, 54, 0.15);
+  color: var(--m-danger);
 }
 
 .timeline-estado.estado-pendiente {
-  background: rgba(255, 152, 0, 0.2);
-  color: #ffb74d;
+  background: rgba(255, 152, 0, 0.15);
+  color: var(--m-warning);
 }
 
 .timeline-estado.estado-borrador {
-  background: rgba(158, 158, 158, 0.2);
+  background: rgba(158, 158, 158, 0.15);
   color: #bdbdbd;
 }
 
 .timeline-fecha {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--m-text-subtle);
   font-size: 12px;
 }
 
@@ -176,28 +181,28 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 13px;
-  margin-bottom: 4px;
+  margin-bottom: var(--m-space-xs);
 }
 
 .timeline-user .mat-icon {
   font-size: 16px;
   width: 16px;
   height: 16px;
-  color: #64b5f6;
+  color: var(--m-accent);
 }
 
 .timeline-comment {
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--m-text-muted);
   font-size: 13px;
   font-style: italic;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
+  padding: var(--m-space-sm) var(--m-space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--m-radius-sm);
   margin-top: 6px;
 }
 
@@ -205,11 +210,11 @@
   font-size: 16px;
   width: 16px;
   height: 16px;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.25);
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .btn-cancel {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
 }
