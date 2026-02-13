@@ -74,6 +74,12 @@
           <div class="kpi-info">
             <span class="kpi-value">{{ dashboardData.totalGastosMes | number:'1.2-2' }} EUR</span>
             <span class="kpi-label">Gastos este mes</span>
+            @if (dashboardData.variacionMensualPorcentaje !== null && dashboardData.variacionMensualPorcentaje !== undefined) {
+              <span class="kpi-variation" [class.variation-up]="dashboardData.variacionMensualPorcentaje > 0" [class.variation-down]="dashboardData.variacionMensualPorcentaje < 0">
+                <mat-icon>{{ dashboardData.variacionMensualPorcentaje >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+                {{ dashboardData.variacionMensualPorcentaje | number:'1.1-1' }}% vs mes anterior
+              </span>
+            }
           </div>
         </div>
         <div class="kpi-card">
@@ -89,10 +95,13 @@
       @if (dashboardData.alertasPresupuesto.length > 0) {
         <div class="alertas-section">
           @for (alerta of dashboardData.alertasPresupuesto; track alerta.departamento) {
-            <div class="alerta-card" [class.alerta-critica]="alerta.porcentajeUsado >= 100">
-              <mat-icon class="alerta-icon">warning</mat-icon>
+            <div class="alerta-card" [class.alerta-critica]="alerta.nivelAlerta === 'CRITICAL'" [class.alerta-warning]="alerta.nivelAlerta === 'WARNING'">
+              <mat-icon class="alerta-icon">{{ alerta.nivelAlerta === 'CRITICAL' ? 'error' : 'warning' }}</mat-icon>
               <div class="alerta-info">
-                <strong>{{ alerta.departamento }}</strong>
+                <div class="alerta-header-row">
+                  <strong>{{ alerta.departamento }}</strong>
+                  <span class="alerta-nivel" [class.nivel-critical]="alerta.nivelAlerta === 'CRITICAL'">{{ alerta.nivelAlerta }}</span>
+                </div>
                 <span>{{ alerta.gastoActual | number:'1.2-2' }} / {{ alerta.presupuestoMensual | number:'1.2-2' }} EUR ({{ alerta.porcentajeUsado | number:'1.0-0' }}%)</span>
               </div>
               <div class="alerta-barra">
@@ -130,6 +139,24 @@
           </mat-card-content>
         </mat-card>
       </div>
+
+      <!-- Category chart -->
+      @if (dashboardData.gastosPorCategoria && dashboardData.gastosPorCategoria.length > 0) {
+        <div class="charts-grid charts-single">
+          <mat-card class="glass-card chart-card">
+            <mat-card-content>
+              <h3 class="chart-title">Gastos por Categoria</h3>
+              <div class="chart-container">
+                <canvas baseChart
+                  [data]="categoryChartData"
+                  [options]="categoryChartOptions"
+                  type="doughnut">
+                </canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      }
     }
 
     <!-- Admin: Configurar presupuestos -->
@@ -177,6 +204,97 @@
         </mat-card-content>
       </mat-card>
     }
+
+    <!-- Filtros avanzados -->
+    <mat-card class="glass-card filtros-card">
+      <mat-card-content>
+        <mat-expansion-panel class="filtros-panel" [(expanded)]="filtrosAbiertos">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>filter_list</mat-icon>
+              Filtros avanzados
+              @if (filtrosActivos) {
+                <span class="filtro-badge">Activos</span>
+              }
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="filtros-grid">
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Estado</mat-label>
+              <mat-select [(ngModel)]="filtroEstado">
+                <mat-option value="">Todos</mat-option>
+                <mat-option value="BORRADOR">Borrador</mat-option>
+                <mat-option value="PENDIENTE_APROBACION">Pendiente</mat-option>
+                <mat-option value="APROBADO">Aprobado</mat-option>
+                <mat-option value="RECHAZADO">Rechazado</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Departamento</mat-label>
+              <mat-select [(ngModel)]="filtroDepartamento">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (depto of departamentos; track depto.idDepartamento) {
+                  <mat-option [value]="depto.idDepartamento">{{ depto.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Categoria</mat-label>
+              <mat-select [(ngModel)]="filtroCategoria">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (cat of categorias; track cat.idCategoria) {
+                  <mat-option [value]="cat.idCategoria">{{ cat.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Buscar texto</mat-label>
+              <input matInput [(ngModel)]="filtroTexto" placeholder="Descripcion...">
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Fecha desde</mat-label>
+              <input matInput [matDatepicker]="pickerDesde" [(ngModel)]="filtroFechaDesde">
+              <mat-datepicker-toggle matIconSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+              <mat-datepicker #pickerDesde></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Fecha hasta</mat-label>
+              <input matInput [matDatepicker]="pickerHasta" [(ngModel)]="filtroFechaHasta">
+              <mat-datepicker-toggle matIconSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+              <mat-datepicker #pickerHasta></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Importe min (EUR)</mat-label>
+              <input matInput type="number" [(ngModel)]="filtroImporteMin">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Importe max (EUR)</mat-label>
+              <input matInput type="number" [(ngModel)]="filtroImporteMax">
+            </mat-form-field>
+          </div>
+
+          <div class="filtros-actions">
+            <button mat-raised-button class="btn-add" (click)="aplicarFiltros()">
+              <mat-icon>search</mat-icon>
+              Aplicar filtros
+            </button>
+            <button mat-button (click)="limpiarFiltros()" style="color: #e0e6ed;">
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </mat-expansion-panel>
+      </mat-card-content>
+    </mat-card>
 
     <!-- Tabla de gastos -->
     @if (loading) {
@@ -239,6 +357,20 @@
                 </td>
               </ng-container>
 
+              <ng-container matColumnDef="categoria">
+                <th mat-header-cell *matHeaderCellDef>Categoria</th>
+                <td mat-cell *matCellDef="let gasto">
+                  @if (gasto.nombreCategoria) {
+                    <span class="categoria-badge">
+                      <span class="cat-dot" [style.background]="gasto.colorCategoria"></span>
+                      {{ gasto.nombreCategoria }}
+                    </span>
+                  } @else {
+                    <span class="sin-categoria">-</span>
+                  }
+                </td>
+              </ng-container>
+
               <ng-container matColumnDef="fechaGasto">
                 <th mat-header-cell *matHeaderCellDef>Fecha</th>
                 <td mat-cell *matCellDef="let gasto">{{ gasto.fechaGasto | date:'dd/MM/yyyy' }}</td>
@@ -271,6 +403,9 @@
                 <th mat-header-cell *matHeaderCellDef>Acciones</th>
                 <td mat-cell *matCellDef="let gasto">
                   <div class="action-buttons">
+                    <button mat-icon-button class="btn-action btn-historial" (click)="$event.stopPropagation(); verHistorial(gasto)" title="Ver historial">
+                      <mat-icon>history</mat-icon>
+                    </button>
                     @if (!authService.isAdmin && !authService.isManager && gasto.estadoGasto === 'BORRADOR') {
                       <button mat-icon-button class="btn-action btn-enviar" (click)="$event.stopPropagation(); enviarARevision(gasto)" title="Enviar a revision">
                         <mat-icon>send</mat-icon>

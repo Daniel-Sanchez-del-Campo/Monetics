@@ -1,5 +1,6 @@
 package com.monetics.moneticsback.service;
 
+import com.monetics.moneticsback.dto.AuditoriaGastoDTO;
 import com.monetics.moneticsback.model.AuditoriaGasto;
 import com.monetics.moneticsback.model.Gasto;
 import com.monetics.moneticsback.model.Usuario;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Servicio encargado de gestionar la auditoría de los gastos corporativos.
@@ -69,5 +71,23 @@ public class AuditoriaGastoService {
      */
     public List<AuditoriaGasto> obtenerAuditoriasDeGasto(Long idGasto) {
         return auditoriaGastoRepository.findByGasto_IdGasto(idGasto);
+    }
+
+    public List<AuditoriaGastoDTO> obtenerHistorialDeGasto(Long idGasto) {
+        return auditoriaGastoRepository.findByGasto_IdGastoOrderByFechaCambioAsc(idGasto)
+                .stream()
+                .map(this::mapearAAuditoriaDTO)
+                .collect(Collectors.toList());
+    }
+
+    private AuditoriaGastoDTO mapearAAuditoriaDTO(AuditoriaGasto a) {
+        AuditoriaGastoDTO dto = new AuditoriaGastoDTO();
+        dto.setIdAuditoria(a.getIdAuditoria());
+        dto.setEstadoAnterior(a.getEstadoAnterior());
+        dto.setEstadoNuevo(a.getEstadoNuevo());
+        dto.setFechaCambio(a.getFechaCambio());
+        dto.setComentario(a.getComentario());
+        dto.setNombreUsuarioAccion(a.getUsuarioAccion().getNombre());
+        return dto;
     }
 }

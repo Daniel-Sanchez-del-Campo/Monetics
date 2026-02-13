@@ -49,13 +49,29 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Fecha del Gasto</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="fechaGasto">
-      <mat-icon matPrefix>calendar_today</mat-icon>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    <div class="row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Fecha del Gasto</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fechaGasto">
+        <mat-icon matPrefix>calendar_today</mat-icon>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="idCategoria">
+          <mat-option [value]="null">Sin categoria</mat-option>
+          @for (cat of categorias; track cat.idCategoria) {
+            <mat-option [value]="cat.idCategoria">
+              <span class="cat-dot" [style.background]="cat.color"></span>
+              {{ cat.nombre }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+    </div>
 
     <!-- Upload ticket photo -->
     <div class="upload-area">

@@ -10,6 +10,9 @@ public class DashboardDTO {
     private BigDecimal totalPendienteReembolso;
     private BigDecimal totalAprobado;
     private BigDecimal totalGastosMes;
+    private BigDecimal totalGastosMesAnterior;
+    private Double variacionMensualPorcentaje;
+    private List<GastoPorCategoriaDTO> gastosPorCategoria;
     private int totalGastos;
     private int gastosPendientes;
     private int gastosAprobados;
@@ -47,14 +50,16 @@ public class DashboardDTO {
         private BigDecimal presupuestoMensual;
         private BigDecimal gastoActual;
         private double porcentajeUsado;
+        private String nivelAlerta;
 
         public AlertaPresupuestoDTO() {}
 
-        public AlertaPresupuestoDTO(String departamento, BigDecimal presupuestoMensual, BigDecimal gastoActual, double porcentajeUsado) {
+        public AlertaPresupuestoDTO(String departamento, BigDecimal presupuestoMensual, BigDecimal gastoActual, double porcentajeUsado, String nivelAlerta) {
             this.departamento = departamento;
             this.presupuestoMensual = presupuestoMensual;
             this.gastoActual = gastoActual;
             this.porcentajeUsado = porcentajeUsado;
+            this.nivelAlerta = nivelAlerta;
         }
 
         public String getDepartamento() { return departamento; }
@@ -65,6 +70,33 @@ public class DashboardDTO {
         public void setGastoActual(BigDecimal gastoActual) { this.gastoActual = gastoActual; }
         public double getPorcentajeUsado() { return porcentajeUsado; }
         public void setPorcentajeUsado(double porcentajeUsado) { this.porcentajeUsado = porcentajeUsado; }
+        public String getNivelAlerta() { return nivelAlerta; }
+        public void setNivelAlerta(String nivelAlerta) { this.nivelAlerta = nivelAlerta; }
+    }
+
+    public static class GastoPorCategoriaDTO {
+        private String categoria;
+        private String color;
+        private BigDecimal totalGastado;
+        private int numGastos;
+
+        public GastoPorCategoriaDTO() {}
+
+        public GastoPorCategoriaDTO(String categoria, String color, BigDecimal totalGastado, int numGastos) {
+            this.categoria = categoria;
+            this.color = color;
+            this.totalGastado = totalGastado;
+            this.numGastos = numGastos;
+        }
+
+        public String getCategoria() { return categoria; }
+        public void setCategoria(String categoria) { this.categoria = categoria; }
+        public String getColor() { return color; }
+        public void setColor(String color) { this.color = color; }
+        public BigDecimal getTotalGastado() { return totalGastado; }
+        public void setTotalGastado(BigDecimal totalGastado) { this.totalGastado = totalGastado; }
+        public int getNumGastos() { return numGastos; }
+        public void setNumGastos(int numGastos) { this.numGastos = numGastos; }
     }
 
     // === Getters/Setters del DTO principal ===
@@ -79,6 +111,12 @@ public class DashboardDTO {
     public void setTotalAprobado(BigDecimal totalAprobado) { this.totalAprobado = totalAprobado; }
     public BigDecimal getTotalGastosMes() { return totalGastosMes; }
     public void setTotalGastosMes(BigDecimal totalGastosMes) { this.totalGastosMes = totalGastosMes; }
+    public BigDecimal getTotalGastosMesAnterior() { return totalGastosMesAnterior; }
+    public void setTotalGastosMesAnterior(BigDecimal totalGastosMesAnterior) { this.totalGastosMesAnterior = totalGastosMesAnterior; }
+    public Double getVariacionMensualPorcentaje() { return variacionMensualPorcentaje; }
+    public void setVariacionMensualPorcentaje(Double variacionMensualPorcentaje) { this.variacionMensualPorcentaje = variacionMensualPorcentaje; }
+    public List<GastoPorCategoriaDTO> getGastosPorCategoria() { return gastosPorCategoria; }
+    public void setGastosPorCategoria(List<GastoPorCategoriaDTO> gastosPorCategoria) { this.gastosPorCategoria = gastosPorCategoria; }
     public int getTotalGastos() { return totalGastos; }
     public void setTotalGastos(int totalGastos) { this.totalGastos = totalGastos; }
     public int getGastosPendientes() { return gastosPendientes; }

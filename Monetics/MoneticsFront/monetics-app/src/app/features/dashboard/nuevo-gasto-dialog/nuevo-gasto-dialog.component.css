@@ -210,3 +210,13 @@ mat-dialog-actions {
   color: rgba(255, 255, 255, 0.5);
   font-size: 12px;
 }
+
+/* Category dot */
+.cat-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}

@@ -4,6 +4,9 @@ export interface DashboardData {
   totalPendienteReembolso: number;
   totalAprobado: number;
   totalGastosMes: number;
+  totalGastosMesAnterior: number;
+  variacionMensualPorcentaje: number | null;
+  gastosPorCategoria: GastoPorCategoria[];
   totalGastos: number;
   gastosPendientes: number;
   gastosAprobados: number;
@@ -22,6 +25,14 @@ export interface AlertaPresupuesto {
   presupuestoMensual: number;
   gastoActual: number;
   porcentajeUsado: number;
+  nivelAlerta: string;
+}
+
+export interface GastoPorCategoria {
+  categoria: string;
+  color: string;
+  totalGastado: number;
+  numGastos: number;
 }
 
 export interface Departamento {

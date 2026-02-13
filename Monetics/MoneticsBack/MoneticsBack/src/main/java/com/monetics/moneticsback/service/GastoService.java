@@ -1,15 +1,20 @@
 package com.monetics.moneticsback.service;
 
 import com.monetics.moneticsback.dto.CrearGastoDTO;
+import com.monetics.moneticsback.dto.FiltroGastoDTO;
 import com.monetics.moneticsback.dto.GastoDTO;
 import com.monetics.moneticsback.exception.AccesoNoPermitidoException;
 import com.monetics.moneticsback.exception.OperacionNoPermitidaException;
 import com.monetics.moneticsback.exception.RecursoNoEncontradoException;
+import com.monetics.moneticsback.model.Categoria;
 import com.monetics.moneticsback.model.Gasto;
 import com.monetics.moneticsback.model.Usuario;
 import com.monetics.moneticsback.model.enums.EstadoGasto;
 import com.monetics.moneticsback.model.enums.RolUsuario;
+import com.monetics.moneticsback.repository.CategoriaRepository;
 import com.monetics.moneticsback.repository.GastoRepository;
+import com.monetics.moneticsback.repository.specification.GastoSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,17 +38,20 @@ public class GastoService {
     private final UsuarioService usuarioService;
     private final AuditoriaGastoService auditoriaGastoService;
     private final ExchangeRateService exchangeRateService;
+    private final CategoriaRepository categoriaRepository;
 
     public GastoService(
             GastoRepository gastoRepository,
             UsuarioService usuarioService,
             AuditoriaGastoService auditoriaGastoService,
-            ExchangeRateService exchangeRateService
+            ExchangeRateService exchangeRateService,
+            CategoriaRepository categoriaRepository
     ) {
         this.gastoRepository = gastoRepository;
         this.usuarioService = usuarioService;
         this.auditoriaGastoService = auditoriaGastoService;
         this.exchangeRateService = exchangeRateService;
+        this.categoriaRepository = categoriaRepository;
     }
 
     /* ============================
@@ -72,6 +80,49 @@ public class GastoService {
     }
 
     /* ============================
+       FILTRADO AVANZADO
+       ============================ */
+
+    public List<GastoDTO> buscarGastosFiltrados(FiltroGastoDTO filtro, Long idUsuario, String rol) {
+        Specification<Gasto> spec = Specification.where(null);
+
+        if ("ROLE_USER".equals(rol)) {
+            spec = spec.and(GastoSpecification.conUsuario(idUsuario));
+        } else if ("ROLE_MANAGER".equals(rol)) {
+            spec = spec.and(GastoSpecification.delEquipo(idUsuario));
+        }
+
+        if (filtro.getEstadoGasto() != null && !filtro.getEstadoGasto().isBlank()) {
+            spec = spec.and(GastoSpecification.conEstado(EstadoGasto.valueOf(filtro.getEstadoGasto())));
+        }
+        if (filtro.getIdDepartamento() != null) {
+            spec = spec.and(GastoSpecification.conDepartamento(filtro.getIdDepartamento()));
+        }
+        if (filtro.getIdCategoria() != null) {
+            spec = spec.and(GastoSpecification.conCategoria(filtro.getIdCategoria()));
+        }
+        if (filtro.getFechaDesde() != null) {
+            spec = spec.and(GastoSpecification.conFechaDesde(filtro.getFechaDesde()));
+        }
+        if (filtro.getFechaHasta() != null) {
+            spec = spec.and(GastoSpecification.conFechaHasta(filtro.getFechaHasta()));
+        }
+        if (filtro.getImporteMin() != null) {
+            spec = spec.and(GastoSpecification.conImporteMinimo(filtro.getImporteMin()));
+        }
+        if (filtro.getImporteMax() != null) {
+            spec = spec.and(GastoSpecification.conImporteMaximo(filtro.getImporteMax()));
+        }
+        if (filtro.getTexto() != null && !filtro.getTexto().isBlank()) {
+            spec = spec.and(GastoSpecification.conTexto(filtro.getTexto()));
+        }
+
+        return gastoRepository.findAll(spec).stream()
+                .map(this::mapearAGastoDTO)
+                .collect(Collectors.toList());
+    }
+
+    /* ============================
        CREACIÓN
        ============================ */
 
@@ -95,6 +146,12 @@ public class GastoService {
 
         gasto.setUsuario(usuario);
         gasto.setDepartamento(usuario.getDepartamento());
+
+        if (dto.getIdCategoria() != null) {
+            Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+                    .orElseThrow(() -> new RecursoNoEncontradoException("Categoría no encontrada"));
+            gasto.setCategoria(categoria);
+        }
 
         return mapearAGastoDTO(gastoRepository.save(gasto));
     }
@@ -218,6 +275,12 @@ public class GastoService {
         dto.setFechaGasto(gasto.getFechaGasto());
         dto.setImagenTicket(gasto.getImagenTicket());
         dto.setNombreDepartamento(gasto.getDepartamento().getNombre());
+
+        if (gasto.getCategoria() != null) {
+            dto.setIdCategoria(gasto.getCategoria().getIdCategoria());
+            dto.setNombreCategoria(gasto.getCategoria().getNombre());
+            dto.setColorCategoria(gasto.getCategoria().getColor());
+        }
 
         return dto;
     }

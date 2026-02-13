@@ -58,6 +58,10 @@ public class Gasto {
     @JoinColumn(name = "id_departamento", nullable = false)
     private Departamento departamento;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_categoria")
+    private Categoria categoria;
+
     @OneToMany(mappedBy = "gasto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AuditoriaGasto> auditorias;
 }

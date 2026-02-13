@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,11 +15,16 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
-import { AuthService, GastoService, DashboardService } from '../../core/services';
-import { Gasto, Usuario, DashboardData, Departamento } from '../../core/models';
+import { AuthService, GastoService, DashboardService, CategoriaService } from '../../core/services';
+import { Gasto, Usuario, DashboardData, Departamento, Categoria } from '../../core/models';
 import { NuevoGastoDialogComponent } from './nuevo-gasto-dialog/nuevo-gasto-dialog.component';
+import { HistorialGastoDialogComponent } from './historial-gasto-dialog/historial-gasto-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -39,6 +44,10 @@ import { NuevoGastoDialogComponent } from './nuevo-gasto-dialog/nuevo-gasto-dial
     MatDialogModule,
     MatInputModule,
     MatFormFieldModule,
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatExpansionModule,
     BaseChartDirective
   ],
   templateUrl: './dashboard.component.html',
@@ -54,9 +63,22 @@ export class DashboardComponent implements OnInit {
   // Dashboard data
   dashboardData: DashboardData | null = null;
   departamentos: Departamento[] = [];
+  categorias: Categoria[] = [];
   editingDepto: Departamento | null = null;
   editPresMensual = 0;
   editPresAnual = 0;
+
+  // Filtros
+  filtrosAbiertos = false;
+  filtroEstado: string = '';
+  filtroDepartamento: number | null = null;
+  filtroCategoria: number | null = null;
+  filtroFechaDesde: Date | null = null;
+  filtroFechaHasta: Date | null = null;
+  filtroImporteMin: number | null = null;
+  filtroImporteMax: number | null = null;
+  filtroTexto: string = '';
+  filtrosActivos = false;
 
   // Charts
   barChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
@@ -81,8 +103,17 @@ export class DashboardComponent implements OnInit {
     }
   };
 
+  categoryChartData: ChartConfiguration<'doughnut'>['data'] = { labels: [], datasets: [] };
+  categoryChartOptions: ChartConfiguration<'doughnut'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { color: '#e0e6ed', padding: 16 } }
+    }
+  };
+
   get displayedColumns(): string[] {
-    const cols = ['descripcion', 'fechaGasto', 'importeOriginal', 'importeEur', 'estadoGasto', 'acciones'];
+    const cols = ['descripcion', 'categoria', 'fechaGasto', 'importeOriginal', 'importeEur', 'estadoGasto', 'acciones'];
     if (this.authService.isAdmin) {
       return ['select', ...cols];
     }
@@ -93,6 +124,7 @@ export class DashboardComponent implements OnInit {
     public authService: AuthService,
     private gastoService: GastoService,
     private dashboardService: DashboardService,
+    private categoriaService: CategoriaService,
     private router: Router,
     private dialog: MatDialog
   ) {}
@@ -103,10 +135,18 @@ export class DashboardComponent implements OnInit {
       if (user) {
         this.cargarGastos();
         this.cargarDashboard();
+        this.cargarCategorias();
         if (this.authService.isAdmin) {
           this.cargarDepartamentos();
         }
       }
+    });
+  }
+
+  cargarCategorias(): void {
+    this.categoriaService.obtenerActivas().subscribe({
+      next: (cats) => this.categorias = cats,
+      error: () => {}
     });
   }
 
@@ -159,6 +199,19 @@ export class DashboardComponent implements OnInit {
         borderWidth: 2
       }]
     };
+
+    // Doughnut: categorias
+    if (data.gastosPorCategoria && data.gastosPorCategoria.length > 0) {
+      this.categoryChartData = {
+        labels: data.gastosPorCategoria.map(c => c.categoria),
+        datasets: [{
+          data: data.gastosPorCategoria.map(c => c.totalGastado),
+          backgroundColor: data.gastosPorCategoria.map(c => c.color + 'cc'),
+          borderColor: data.gastosPorCategoria.map(c => c.color),
+          borderWidth: 2
+        }]
+      };
+    }
   }
 
   editarPresupuesto(depto: Departamento): void {
@@ -185,6 +238,62 @@ export class DashboardComponent implements OnInit {
       },
       error: () => {}
     });
+  }
+
+  // === Filtros ===
+  aplicarFiltros(): void {
+    if (!this.currentUser) return;
+    this.loading = true;
+    this.selection.clear();
+
+    const rol = this.authService.isAdmin ? 'ROLE_ADMIN'
+      : this.authService.isManager ? 'ROLE_MANAGER' : 'ROLE_USER';
+
+    const filtros: any = {
+      idUsuario: this.currentUser.idUsuario,
+      rol: rol
+    };
+
+    if (this.filtroEstado) filtros.estadoGasto = this.filtroEstado;
+    if (this.filtroDepartamento) filtros.idDepartamento = this.filtroDepartamento;
+    if (this.filtroCategoria) filtros.idCategoria = this.filtroCategoria;
+    if (this.filtroFechaDesde) filtros.fechaDesde = this.formatDate(this.filtroFechaDesde);
+    if (this.filtroFechaHasta) filtros.fechaHasta = this.formatDate(this.filtroFechaHasta);
+    if (this.filtroImporteMin !== null) filtros.importeMin = this.filtroImporteMin;
+    if (this.filtroImporteMax !== null) filtros.importeMax = this.filtroImporteMax;
+    if (this.filtroTexto) filtros.texto = this.filtroTexto;
+
+    this.filtrosActivos = true;
+
+    this.gastoService.filtrarGastos(filtros).subscribe({
+      next: (gastos) => {
+        this.gastos = gastos;
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
+    });
+  }
+
+  limpiarFiltros(): void {
+    this.filtroEstado = '';
+    this.filtroDepartamento = null;
+    this.filtroCategoria = null;
+    this.filtroFechaDesde = null;
+    this.filtroFechaHasta = null;
+    this.filtroImporteMin = null;
+    this.filtroImporteMax = null;
+    this.filtroTexto = '';
+    this.filtrosActivos = false;
+    this.cargarGastos();
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   cargarGastos(): void {
@@ -248,6 +357,13 @@ export class DashboardComponent implements OnInit {
         this.cargarGastos();
         this.cargarDashboard();
       }
+    });
+  }
+
+  verHistorial(gasto: Gasto): void {
+    this.dialog.open(HistorialGastoDialogComponent, {
+      width: '500px',
+      data: { idGasto: gasto.idGasto, descripcion: gasto.descripcion }
     });
   }
 

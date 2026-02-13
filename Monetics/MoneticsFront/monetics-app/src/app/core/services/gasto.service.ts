@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 import { ApiService } from './api.service';
 import { Gasto, CrearGasto } from '../models';
 
@@ -28,6 +29,16 @@ export class GastoService {
 
   obtenerTodosGastos(): Observable<Gasto[]> {
     return this.apiService.get<Gasto[]>('/gastos');
+  }
+
+  filtrarGastos(filtros: { [key: string]: any }): Observable<Gasto[]> {
+    let params = new HttpParams();
+    Object.keys(filtros).forEach(key => {
+      if (filtros[key] !== null && filtros[key] !== undefined && filtros[key] !== '') {
+        params = params.set(key, filtros[key].toString());
+      }
+    });
+    return this.apiService.get<Gasto[]>('/gastos/filtrar', params);
   }
 
   enviarARevision(idGasto: number, idUsuario: number): Observable<void> {

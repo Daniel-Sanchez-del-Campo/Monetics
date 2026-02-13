@@ -27,4 +27,6 @@ public interface AuditoriaGastoRepository extends JpaRepository<AuditoriaGasto, 
      * @return lista de auditorías del gasto
      */
     List<AuditoriaGasto> findByGasto_IdGasto(Long idGasto);
+
+    List<AuditoriaGasto> findByGasto_IdGastoOrderByFechaCambioAsc(Long idGasto);
 }
