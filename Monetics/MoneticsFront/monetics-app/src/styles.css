@@ -1,27 +1,39 @@
 /* ===== GLOBAL STYLES - MONETICS ===== */
-/* Inspired by Zendesk's clean, professional design language */
+/* Corporate light theme — white cards on soft blue gradient */
 
 :root {
-  /* Color tokens */
-  --m-bg-primary: #0a1628;
-  --m-bg-secondary: #1a2a4a;
-  --m-bg-tertiary: #0d2137;
-  --m-text-primary: #e0e6ed;
+  /* Backgrounds — Light blue gradient */
+  --m-bg-primary: #F4F8FC;
+  --m-bg-secondary: #EAF2FB;
+  --m-bg-tertiary: #E0ECF5;
+
+  /* Text */
+  --m-text-primary: #1E293B;
   --m-text-white: #ffffff;
-  --m-text-muted: rgba(255, 255, 255, 0.5);
-  --m-text-subtle: rgba(255, 255, 255, 0.4);
-  --m-accent: #64b5f6;
-  --m-accent-hover: #90caf9;
-  --m-accent-glow: rgba(100, 181, 246, 0.25);
-  --m-brand: #1976d2;
-  --m-brand-light: #2196f3;
-  --m-success: #81c784;
-  --m-warning: #ffb74d;
-  --m-danger: #ef9a9a;
-  --m-glass-bg: rgba(255, 255, 255, 0.06);
-  --m-glass-bg-hover: rgba(255, 255, 255, 0.09);
-  --m-glass-border: rgba(255, 255, 255, 0.1);
-  --m-glass-border-light: rgba(255, 255, 255, 0.15);
+  --m-text-muted: #64748B;
+  --m-text-subtle: #94A3B8;
+
+  /* Brand — Dark blue (buttons, links, header, active states) */
+  --m-brand: #1E3A5F;
+  --m-brand-light: #2B4F7E;
+  --m-brand-dark: #152C4A;
+
+  /* Accent — Mint green (success, approval, positive indicators) */
+  --m-accent: #22C55E;
+  --m-accent-hover: #16A34A;
+  --m-accent-glow: rgba(34, 197, 94, 0.15);
+
+  /* Status */
+  --m-success: #22C55E;
+  --m-warning: #F59E0B;
+  --m-danger: #EF4444;
+  --m-danger-soft: #FCA5A5;
+
+  /* Cards (reused by .glass-* classes) */
+  --m-glass-bg: #ffffff;
+  --m-glass-bg-hover: #F8FAFC;
+  --m-glass-border: rgba(0, 0, 0, 0.08);
+  --m-glass-border-light: rgba(0, 0, 0, 0.12);
 
   /* Spacing (8px grid) */
   --m-space-xs: 4px;
@@ -38,23 +50,23 @@
   --m-radius-xl: 20px;
   --m-radius-full: 50%;
 
-  /* Transitions (Zendesk-style smooth) */
+  /* Transitions */
   --m-transition-fast: 0.15s ease-in-out;
   --m-transition: 0.2s ease-in-out;
   --m-transition-slow: 0.3s ease-in-out;
 
-  /* Shadows */
-  --m-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
-  --m-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --m-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
-  --m-shadow-glow: 0 4px 20px rgba(25, 118, 210, 0.35);
+  /* Shadows — light, subtle */
+  --m-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --m-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --m-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --m-shadow-glow: 0 4px 16px rgba(30, 58, 95, 0.12);
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, var(--m-bg-primary) 0%, var(--m-bg-secondary) 40%, var(--m-bg-tertiary) 100%);
+  background: linear-gradient(135deg, var(--m-bg-primary) 0%, var(--m-bg-secondary) 50%, var(--m-bg-tertiary) 100%);
   background-attachment: fixed;
   color: var(--m-text-primary);
   -webkit-font-smoothing: antialiased;
@@ -69,17 +81,17 @@ html, body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 160, 255, 0.2);
+  background: rgba(30, 58, 95, 0.15);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 160, 255, 0.4);
+  background: rgba(30, 58, 95, 0.25);
 }
 
 /* ===== SELECTION ===== */
 ::selection {
-  background: rgba(100, 181, 246, 0.3);
-  color: #ffffff;
+  background: rgba(30, 58, 95, 0.15);
+  color: var(--m-text-primary);
 }
 
 /* ===== MATERIAL OVERRIDES ===== */
@@ -88,7 +100,7 @@ html, body {
   font-family: 'Inter', sans-serif !important;
 }
 
-/* Buttons - refined with Zendesk-style transitions */
+/* Buttons */
 .mat-mdc-raised-button,
 .mat-mdc-flat-button,
 .mat-mdc-outlined-button {
@@ -116,7 +128,7 @@ html, body {
 }
 
 .mat-mdc-icon-button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
 .mat-mdc-button {
@@ -127,39 +139,37 @@ html, body {
 }
 
 .mat-mdc-button:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.06) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
 /* Links */
 a {
-  color: var(--m-accent);
+  color: var(--m-brand);
   text-decoration: none;
   transition: color var(--m-transition-fast);
 }
 
 a:hover {
-  color: var(--m-accent-hover);
+  color: var(--m-brand-light);
 }
 
-/* ===== DIALOG OVERLAY (rendered outside component) ===== */
+/* ===== DIALOG OVERLAY ===== */
 .mat-mdc-dialog-container .mdc-dialog__surface {
-  background: rgba(15, 27, 61, 0.97) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: #ffffff !important;
   border: 1px solid var(--m-glass-border);
   border-radius: var(--m-radius-xl) !important;
   color: var(--m-text-primary);
-  box-shadow: var(--m-shadow-lg), 0 0 60px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: var(--m-shadow-lg), 0 0 40px rgba(0, 0, 0, 0.06) !important;
 }
 
 .cdk-overlay-dark-backdrop {
-  background: rgba(0, 0, 0, 0.65) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
   backdrop-filter: blur(2px);
 }
 
 /* Datepicker overlay */
 .mat-datepicker-content {
-  background: rgba(15, 27, 61, 0.98) !important;
+  background: #ffffff !important;
   border: 1px solid var(--m-glass-border);
   border-radius: var(--m-radius-lg) !important;
   color: var(--m-text-primary) !important;
@@ -177,7 +187,7 @@ a:hover {
 }
 
 .mat-datepicker-content .mat-calendar-body-today:not(.mat-calendar-body-selected) {
-  border-color: var(--m-accent) !important;
+  border-color: var(--m-brand) !important;
 }
 
 .mat-datepicker-content .mat-calendar-table-header,
@@ -197,7 +207,7 @@ a:hover {
 
 /* Select panel overlay */
 .mat-mdc-select-panel {
-  background: rgba(15, 27, 61, 0.98) !important;
+  background: #ffffff !important;
   border: 1px solid var(--m-glass-border);
   border-radius: var(--m-radius-md) !important;
   box-shadow: var(--m-shadow-lg) !important;
@@ -210,12 +220,12 @@ a:hover {
 
 .mat-mdc-option:hover,
 .mat-mdc-option.mdc-list-item--selected:not(.mat-mdc-option-multiple) {
-  background: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
 }
 
 /* Snackbar / toast */
 .mat-mdc-snack-bar-container .mdc-snackbar__surface {
-  background: rgba(15, 27, 61, 0.95) !important;
-  border: 1px solid var(--m-glass-border);
+  background: var(--m-brand) !important;
   border-radius: var(--m-radius-md) !important;
+  color: #ffffff;
 }

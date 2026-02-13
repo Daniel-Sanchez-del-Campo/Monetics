@@ -185,8 +185,8 @@ export class DashboardComponent implements OnInit {
         {
           data: data.gastosPorDepartamento.map(d => d.totalGastado),
           label: 'Gastado',
-          backgroundColor: 'rgba(100, 181, 246, 0.6)',
-          borderColor: 'rgba(100, 181, 246, 0.8)',
+          backgroundColor: 'rgba(78, 205, 196, 0.6)',
+          borderColor: 'rgba(78, 205, 196, 0.8)',
           borderWidth: 1,
           borderRadius: 4
         },

@@ -101,7 +101,7 @@ mat-dialog-actions {
 }
 
 .btn-save {
-  background: linear-gradient(135deg, var(--m-brand) 0%, #1565c0 100%) !important;
+  background: linear-gradient(135deg, var(--m-brand) 0%, var(--m-brand-dark) 100%) !important;
   color: #ffffff !important;
   padding: 6px 20px !important;
 }
@@ -141,8 +141,8 @@ mat-dialog-actions {
 }
 
 .upload-dropzone:hover {
-  border-color: rgba(100, 181, 246, 0.4);
-  background: rgba(100, 181, 246, 0.04);
+  border-color: rgba(78, 205, 196, 0.4);
+  background: rgba(78, 205, 196, 0.04);
 }
 
 .upload-dropzone.has-image {

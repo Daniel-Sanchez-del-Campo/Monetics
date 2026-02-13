@@ -27,7 +27,7 @@
 .logo {
   width: 200px;
   height: auto;
-  filter: drop-shadow(0 2px 8px rgba(100, 181, 246, 0.2));
+  filter: drop-shadow(0 2px 8px rgba(78, 205, 196, 0.2));
 }
 
 .register-card mat-card-title {
@@ -93,7 +93,7 @@ button[type="submit"] {
   height: 48px;
   font-size: 15px;
   margin-top: var(--m-space-sm);
-  background: linear-gradient(135deg, var(--m-brand) 0%, #1565c0 100%) !important;
+  background: linear-gradient(135deg, var(--m-brand) 0%, var(--m-brand-dark) 100%) !important;
   color: #ffffff !important;
 }
 
