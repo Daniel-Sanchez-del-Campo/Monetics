@@ -10,19 +10,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * ========================== GLOBAL EXCEPTION HANDLER ==========================
  * Manejador global de excepciones del backend.
  *
- * Centraliza la conversión de excepciones de negocio
- * en respuestas HTTP coherentes.
+ * CONCEPTOS CLAVE PARA LA PRESENTACIÓN:
  *
- * Evita que los controllers tengan bloques try/catch
- * y mantiene una arquitectura limpia.
+ * ¿QUÉ ES @RestControllerAdvice?
+ * - Es un componente de Spring que intercepta TODAS las excepciones lanzadas
+ *   desde cualquier Controller de la aplicación.
+ * - Centraliza el manejo de errores en un solo lugar, evitando bloques
+ *   try/catch repetidos en cada Controller.
+ *
+ * RELACIÓN CON SPRING SECURITY:
+ * - Spring Security gestiona automáticamente los errores de autenticación
+ *   (401 Unauthorized cuando las credenciales son incorrectas o el JWT es inválido).
+ * - Este handler gestiona los errores de AUTORIZACIÓN a nivel de negocio:
+ *
+ *   · AccesoNoPermitidoException → HTTP 403 FORBIDDEN
+ *     Se lanza cuando un usuario autenticado intenta acceder a un recurso
+ *     que NO le pertenece o para el que NO tiene el rol adecuado.
+ *     Ejemplo: un ROLE_USER intenta aprobar un gasto (solo ROLE_MANAGER puede).
+ *
+ *   · RecursoNoEncontradoException → HTTP 404 NOT FOUND
+ *     Se lanza cuando se busca un usuario, gasto o recurso que no existe.
+ *     También puede ocurrir durante la autenticación si el email no existe.
+ *
+ *   · OperacionNoPermitidaException → HTTP 400 BAD REQUEST
+ *     Se lanza cuando una operación viola reglas de negocio.
+ *     Ejemplo: intentar aprobar un gasto que ya fue aprobado.
+ *
+ * FLUJO DE ERRORES DE SEGURIDAD:
+ *   1) JWT inválido/expirado → Spring Security devuelve 401 (automático)
+ *   2) Sin JWT en endpoint protegido → Spring Security devuelve 401 (automático)
+ *   3) Usuario sin permiso para un recurso → AccesoNoPermitidoException → 403 (este handler)
+ *   4) Recurso no encontrado → RecursoNoEncontradoException → 404 (este handler)
+ * =============================================================================
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
-     * Maneja recursos no encontrados.
+     * Maneja recursos no encontrados → HTTP 404.
+     * Se lanza cuando un usuario, gasto, departamento, etc. no existe en la BD.
      */
     @ExceptionHandler(RecursoNoEncontradoException.class)
     public ResponseEntity<Map<String, Object>> manejarRecursoNoEncontrado(
@@ -32,7 +61,13 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja accesos no permitidos.
+     * Maneja accesos no permitidos → HTTP 403 FORBIDDEN.
+     *
+     * IMPORTANTE PARA SEGURIDAD:
+     * - Se lanza desde la capa de servicio cuando un usuario autenticado
+     *   intenta realizar una acción para la que no tiene permiso.
+     * - Diferencia con 401: el 401 significa "no estás autenticado" (no hay JWT),
+     *   mientras que el 403 significa "estás autenticado pero no tienes permiso".
      */
     @ExceptionHandler(AccesoNoPermitidoException.class)
     public ResponseEntity<Map<String, Object>> manejarAccesoNoPermitido(
@@ -42,7 +77,8 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Maneja operaciones no válidas según el negocio.
+     * Maneja operaciones no válidas según reglas de negocio → HTTP 400.
+     * Ejemplo: intentar cambiar el estado de un gasto de forma inválida.
      */
     @ExceptionHandler(OperacionNoPermitidaException.class)
     public ResponseEntity<Map<String, Object>> manejarOperacionNoPermitida(
@@ -52,12 +88,15 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Método auxiliar para construir una respuesta estándar de error.
+     * Construye una respuesta de error estandarizada en formato JSON.
      *
-     * Todas las respuestas de error tienen:
-     * - timestamp
-     * - status HTTP
-     * - mensaje claro
+     * Formato de respuesta:
+     * {
+     *   "timestamp": "2024-02-16T10:30:45.123",
+     *   "status": 403,
+     *   "error": "Forbidden",
+     *   "mensaje": "No tienes permiso para acceder a este recurso"
+     * }
      */
     private ResponseEntity<Map<String, Object>> construirRespuesta(
             HttpStatus status,

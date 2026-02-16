@@ -4,18 +4,19 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
+  background: linear-gradient(to bottom, #0a1628 0%, #1a3a5c 50%, #4a90b8 100%);
 }
 
 .register-card {
   max-width: 420px;
   width: 100%;
   padding: 40px 36px;
-  background: var(--m-glass-bg) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--m-glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--m-radius-xl) !important;
-  box-shadow: var(--m-shadow-lg);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
   color: var(--m-text-primary);
 }
 

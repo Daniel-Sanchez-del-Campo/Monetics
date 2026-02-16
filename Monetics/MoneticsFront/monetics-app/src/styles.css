@@ -2,16 +2,16 @@
 /* Corporate light theme — white cards on soft blue gradient */
 
 :root {
-  /* Backgrounds — Light blue gradient */
-  --m-bg-primary: #F4F8FC;
-  --m-bg-secondary: #EAF2FB;
-  --m-bg-tertiary: #E0ECF5;
+  /* Backgrounds — Dark blue gradient */
+  --m-bg-primary: #0a1628;
+  --m-bg-secondary: #1a3a5c;
+  --m-bg-tertiary: #4a90b8;
 
   /* Text */
-  --m-text-primary: #1E293B;
+  --m-text-primary: #E2E8F0;
   --m-text-white: #ffffff;
-  --m-text-muted: #64748B;
-  --m-text-subtle: #94A3B8;
+  --m-text-muted: #94A3B8;
+  --m-text-subtle: #64748B;
 
   /* Brand — Dark blue (buttons, links, header, active states) */
   --m-brand: #1E3A5F;
@@ -29,11 +29,11 @@
   --m-danger: #EF4444;
   --m-danger-soft: #FCA5A5;
 
-  /* Cards (reused by .glass-* classes) */
-  --m-glass-bg: #ffffff;
-  --m-glass-bg-hover: #F8FAFC;
-  --m-glass-border: rgba(0, 0, 0, 0.08);
-  --m-glass-border-light: rgba(0, 0, 0, 0.12);
+  /* Cards — white translucent over dark gradient */
+  --m-glass-bg: rgba(255, 255, 255, 0.1);
+  --m-glass-bg-hover: rgba(255, 255, 255, 0.15);
+  --m-glass-border: rgba(255, 255, 255, 0.12);
+  --m-glass-border-light: rgba(255, 255, 255, 0.18);
 
   /* Spacing (8px grid) */
   --m-space-xs: 4px;
@@ -55,18 +55,18 @@
   --m-transition: 0.2s ease-in-out;
   --m-transition-slow: 0.3s ease-in-out;
 
-  /* Shadows — light, subtle */
-  --m-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --m-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --m-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --m-shadow-glow: 0 4px 16px rgba(30, 58, 95, 0.12);
+  /* Shadows — over dark background */
+  --m-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --m-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --m-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --m-shadow-glow: 0 4px 16px rgba(74, 144, 184, 0.25);
 }
 
 html, body {
   height: 100%;
   margin: 0;
   font-family: 'Inter', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, var(--m-bg-primary) 0%, var(--m-bg-secondary) 50%, var(--m-bg-tertiary) 100%);
+  background: linear-gradient(to bottom, var(--m-bg-primary) 0%, var(--m-bg-secondary) 50%, var(--m-bg-tertiary) 100%);
   background-attachment: fixed;
   color: var(--m-text-primary);
   -webkit-font-smoothing: antialiased;
@@ -81,17 +81,17 @@ html, body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(30, 58, 95, 0.15);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(30, 58, 95, 0.25);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* ===== SELECTION ===== */
 ::selection {
-  background: rgba(30, 58, 95, 0.15);
-  color: var(--m-text-primary);
+  background: rgba(74, 144, 184, 0.35);
+  color: #ffffff;
 }
 
 /* ===== MATERIAL OVERRIDES ===== */
@@ -128,7 +128,7 @@ html, body {
 }
 
 .mat-mdc-icon-button:hover:not(:disabled) {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 .mat-mdc-button {
@@ -139,27 +139,28 @@ html, body {
 }
 
 .mat-mdc-button:hover:not(:disabled) {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Links */
 a {
-  color: var(--m-brand);
+  color: #7CB8D8;
   text-decoration: none;
   transition: color var(--m-transition-fast);
 }
 
 a:hover {
-  color: var(--m-brand-light);
+  color: #A3D4F0;
 }
 
 /* ===== DIALOG OVERLAY ===== */
 .mat-mdc-dialog-container .mdc-dialog__surface {
-  background: #ffffff !important;
-  border: 1px solid var(--m-glass-border);
+  background: rgba(15, 25, 50, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--m-radius-xl) !important;
   color: var(--m-text-primary);
-  box-shadow: var(--m-shadow-lg), 0 0 40px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5) !important;
 }
 
 .cdk-overlay-dark-backdrop {
@@ -169,8 +170,9 @@ a:hover {
 
 /* Datepicker overlay */
 .mat-datepicker-content {
-  background: #ffffff !important;
-  border: 1px solid var(--m-glass-border);
+  background: rgba(15, 25, 50, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--m-radius-lg) !important;
   color: var(--m-text-primary) !important;
   box-shadow: var(--m-shadow-lg) !important;
@@ -207,8 +209,9 @@ a:hover {
 
 /* Select panel overlay */
 .mat-mdc-select-panel {
-  background: #ffffff !important;
-  border: 1px solid var(--m-glass-border);
+  background: rgba(15, 25, 50, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--m-radius-md) !important;
   box-shadow: var(--m-shadow-lg) !important;
 }
@@ -220,7 +223,7 @@ a:hover {
 
 .mat-mdc-option:hover,
 .mat-mdc-option.mdc-list-item--selected:not(.mat-mdc-option-multiple) {
-  background: rgba(0, 0, 0, 0.04) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Snackbar / toast */
