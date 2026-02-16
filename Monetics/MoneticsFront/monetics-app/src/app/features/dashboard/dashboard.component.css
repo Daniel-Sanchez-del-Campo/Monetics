@@ -22,14 +22,14 @@
 }
 
 .toolbar-logo {
-  height: 38px;
+  height: 40px;
   width: auto;
-  filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgba(255, 255, 255, 0.2));
-  transition: filter var(--m-transition);
+  object-fit: contain;
+  transition: opacity var(--m-transition);
 }
 
 .toolbar-logo:hover {
-  filter: brightness(0) invert(1) drop-shadow(0 2px 8px rgba(255, 255, 255, 0.4));
+  opacity: 0.85;
 }
 
 .toolbar-right {
