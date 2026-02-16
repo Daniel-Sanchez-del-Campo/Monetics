@@ -18,7 +18,7 @@
   pointer-events: none;
   z-index: 0;
 }
-/*Holaholahola*/
+
 .bg-glow-1 {
   width: 500px;
   height: 500px;
@@ -166,7 +166,7 @@
 
 .feature-card {
   padding: 28px 20px;
-  background: var(--m-glass-bg);
+  background:  rgba(243, 234, 224, 0.75);
   border: 1px solid var(--m-glass-border);
   border-radius: var(--m-radius-lg);
   text-align: center;
