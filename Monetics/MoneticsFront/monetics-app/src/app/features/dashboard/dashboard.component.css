@@ -22,7 +22,7 @@
 }
 
 .toolbar-logo {
-  height: 40px;
+  height: 80px;
   width: auto;
   object-fit: contain;
   transition: opacity var(--m-transition);
@@ -89,7 +89,7 @@
   align-items: center;
   margin-bottom: var(--m-space-xl);
   padding: var(--m-space-xl);
-  background: rgba(255, 255, 255, 0.75);
+  background:  rgba(243, 234, 224, 0.75);
   backdrop-filter: blur(16px);
   border-radius: var(--m-radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -135,7 +135,7 @@
 
 /* ===== TRANSLUCENT WHITE CARDS ===== */
 .glass-card {
-  background: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(243, 234, 224, 0.75) !important;
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--m-radius-lg) !important;
@@ -198,7 +198,7 @@
   height: 15px !important;
   vertical-align: middle;
   margin-right: 4px;
-  color: #7CB8D8;
+  color: #296e94;
   opacity: 0.7;
 }
 
@@ -476,7 +476,7 @@
   align-items: center;
   gap: var(--m-space-lg);
   padding: 20px;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(243, 234, 224, 0.75);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--m-radius-lg);
