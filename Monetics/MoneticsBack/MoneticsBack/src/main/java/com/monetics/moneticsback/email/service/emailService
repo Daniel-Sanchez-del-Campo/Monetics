@@ -1,0 +1,6 @@
+package com.monetics.moneticsback.email.service;
+
+import com.monetics.moneticsback.email.emailDetail;
+public interface emailService{
+    void sendSimpleEmail(EmailDetail details);
+}
