@@ -5,6 +5,7 @@ import com.monetics.moneticsback.dto.LoginRequestDTO;
 import com.monetics.moneticsback.dto.LoginResponseDTO;
 import com.monetics.moneticsback.model.Usuario;
 import com.monetics.moneticsback.security.JwtUtil;
+import com.monetics.moneticsback.service.PasswordResetService;
 import com.monetics.moneticsback.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * ========================== AUTH CONTROLLER ==========================
@@ -68,15 +71,18 @@ public class AuthController {
      * Lo usamos para crear usuarios y obtener DTOs.
      */
     private final UsuarioService usuarioService;
+    private final PasswordResetService passwordResetService;
 
     public AuthController(
             AuthenticationManager authenticationManager,
             JwtUtil jwtUtil,
-            UsuarioService usuarioService
+            UsuarioService usuarioService,
+            PasswordResetService passwordResetService
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.usuarioService = usuarioService;
+        this.passwordResetService = passwordResetService;
     }
 
     /**
@@ -206,5 +212,36 @@ public class AuthController {
                         usuarioService.obtenerUsuarioDTO(nuevoUsuario.getIdUsuario())
                 )
         );
+    }
+
+    /**
+     * POST /api/auth/forgot-password
+     * Solicita un email de recuperación de contraseña.
+     * Recibe { "email": "usuario@empresa.com" }
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        passwordResetService.solicitarReset(email);
+        return ResponseEntity.ok(Map.of("message", "Si el email existe, se ha enviado un enlace de recuperación."));
+    }
+
+    /**
+     * POST /api/auth/reset-password
+     * Resetea la contraseña usando un token válido.
+     * Recibe { "token": "uuid", "newPassword": "nuevaContraseña" }
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String newPassword = request.get("newPassword");
+
+        boolean success = passwordResetService.resetearPassword(token, newPassword);
+
+        if (success) {
+            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada correctamente."));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("message", "Token inválido o expirado."));
+        }
     }
 }

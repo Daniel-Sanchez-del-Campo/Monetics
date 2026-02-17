@@ -1,4 +1,5 @@
 package com.monetics.moneticsback.email.content;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

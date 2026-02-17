@@ -1,6 +1,6 @@
 package com.monetics.moneticsback.email.service;
 
-import com.monetics.moneticsbackend.Email.content.EmailDetail;
+import com.monetics.moneticsback.email.content.EmailDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,9 +15,10 @@ public class EmailServiceImpl implements EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    @Value("${spring.mail.username}") private String sender;
+    @Value("${spring.mail.username}")
+    private String sender;
 
-
+    @Override
     public void sendSimpleMail(EmailDetails details) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -26,11 +27,8 @@ public class EmailServiceImpl implements EmailService {
             message.setText(details.getMsgBody());
             message.setSubject(details.getSubject());
             javaMailSender.send(message);
-        } catch (Exception e) { 
-            System.out.println("Error al enviar Email")
+        } catch (Exception e) {
+            System.out.println("Error al enviar Email: " + e.getMessage());
+        }
     }
-
-
-    }
-
 }
