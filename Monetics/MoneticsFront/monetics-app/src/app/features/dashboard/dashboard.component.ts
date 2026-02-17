@@ -161,7 +161,10 @@ export class DashboardComponent implements OnInit {
   }
 
   cargarDashboard(): void {
-    this.dashboardService.obtenerDashboard().subscribe({
+    // Para USER, pasar su idUsuario para que el reembolso sea solo el suyo
+    const idUsuario = (!this.authService.isAdmin && !this.authService.isManager && this.currentUser)
+      ? this.currentUser.idUsuario : undefined;
+    this.dashboardService.obtenerDashboard(idUsuario).subscribe({
       next: (data) => {
         this.dashboardData = data;
         this.actualizarGraficos(data);

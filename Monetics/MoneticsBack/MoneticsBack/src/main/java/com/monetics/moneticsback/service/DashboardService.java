@@ -36,7 +36,7 @@ public class DashboardService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    public DashboardDTO obtenerDashboard() {
+    public DashboardDTO obtenerDashboard(Long idUsuario) {
         DashboardDTO dto = new DashboardDTO();
         List<Gasto> todosGastos = gastoRepository.findAll();
         List<Departamento> departamentos = departamentoRepository.findAll();
@@ -44,10 +44,20 @@ public class DashboardService {
         // === KPIs globales ===
         dto.setTotalGastos(todosGastos.size());
 
-        BigDecimal pendienteReembolso = todosGastos.stream()
-                .filter(g -> g.getEstadoGasto() == EstadoGasto.APROBADO)
-                .map(Gasto::getImporteEur)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // Si se pasa idUsuario, el pendiente de reembolso es solo del usuario
+        BigDecimal pendienteReembolso;
+        if (idUsuario != null) {
+            pendienteReembolso = todosGastos.stream()
+                    .filter(g -> g.getEstadoGasto() == EstadoGasto.APROBADO)
+                    .filter(g -> g.getUsuario().getIdUsuario().equals(idUsuario))
+                    .map(Gasto::getImporteEur)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        } else {
+            pendienteReembolso = todosGastos.stream()
+                    .filter(g -> g.getEstadoGasto() == EstadoGasto.APROBADO)
+                    .map(Gasto::getImporteEur)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
         dto.setTotalPendienteReembolso(pendienteReembolso);
 
         BigDecimal totalAprobado = todosGastos.stream()

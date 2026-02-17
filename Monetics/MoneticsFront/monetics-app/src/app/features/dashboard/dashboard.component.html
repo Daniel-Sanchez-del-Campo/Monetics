@@ -91,8 +91,8 @@
         </div>
       </div>
 
-      <!-- Alertas de presupuesto -->
-      @if (dashboardData.alertasPresupuesto.length > 0) {
+      <!-- Alertas de presupuesto (solo admin y manager) -->
+      @if ((authService.isAdmin || authService.isManager) && dashboardData.alertasPresupuesto.length > 0) {
         <div class="alertas-section">
           @for (alerta of dashboardData.alertasPresupuesto; track alerta.departamento) {
             <div class="alerta-card" [class.alerta-critica]="alerta.nivelAlerta === 'CRITICAL'" [class.alerta-warning]="alerta.nivelAlerta === 'WARNING'">
@@ -112,50 +112,52 @@
         </div>
       }
 
-      <!-- Charts -->
-      <div class="charts-grid">
-        <mat-card class="glass-card chart-card">
-          <mat-card-content>
-            <h3 class="chart-title">Gastos por Departamento</h3>
-            <div class="chart-container">
-              <canvas baseChart
-                [data]="barChartData"
-                [options]="barChartOptions"
-                type="bar">
-              </canvas>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        <mat-card class="glass-card chart-card">
-          <mat-card-content>
-            <h3 class="chart-title">Estado de Gastos</h3>
-            <div class="chart-container">
-              <canvas baseChart
-                [data]="doughnutChartData"
-                [options]="doughnutChartOptions"
-                type="doughnut">
-              </canvas>
-            </div>
-          </mat-card-content>
-        </mat-card>
-      </div>
-
-      <!-- Category chart -->
-      @if (dashboardData.gastosPorCategoria && dashboardData.gastosPorCategoria.length > 0) {
-        <div class="charts-grid charts-single">
+      <!-- Charts (solo admin y manager) -->
+      @if (authService.isAdmin || authService.isManager) {
+        <div class="charts-grid">
           <mat-card class="glass-card chart-card">
             <mat-card-content>
-              <h3 class="chart-title">Gastos por Categoria</h3>
+              <h3 class="chart-title">Gastos por Departamento</h3>
               <div class="chart-container">
                 <canvas baseChart
-                  [data]="categoryChartData"
-                  [options]="categoryChartOptions"
+                  [data]="barChartData"
+                  [options]="barChartOptions"
+                  type="bar">
+                </canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="glass-card chart-card">
+            <mat-card-content>
+              <h3 class="chart-title">Estado de Gastos</h3>
+              <div class="chart-container">
+                <canvas baseChart
+                  [data]="doughnutChartData"
+                  [options]="doughnutChartOptions"
                   type="doughnut">
                 </canvas>
               </div>
             </mat-card-content>
           </mat-card>
         </div>
+
+        <!-- Category chart -->
+        @if (dashboardData.gastosPorCategoria && dashboardData.gastosPorCategoria.length > 0) {
+          <div class="charts-grid charts-single">
+            <mat-card class="glass-card chart-card">
+              <mat-card-content>
+                <h3 class="chart-title">Gastos por Categoria</h3>
+                <div class="chart-container">
+                  <canvas baseChart
+                    [data]="categoryChartData"
+                    [options]="categoryChartOptions"
+                    type="doughnut">
+                  </canvas>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        }
       }
     }
 

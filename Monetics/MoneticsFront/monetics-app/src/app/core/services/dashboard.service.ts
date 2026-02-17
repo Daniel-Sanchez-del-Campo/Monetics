@@ -10,8 +10,9 @@ export class DashboardService {
 
   constructor(private apiService: ApiService) {}
 
-  obtenerDashboard(): Observable<DashboardData> {
-    return this.apiService.get<DashboardData>('/dashboard');
+  obtenerDashboard(idUsuario?: number): Observable<DashboardData> {
+    const url = idUsuario ? `/dashboard?idUsuario=${idUsuario}` : '/dashboard';
+    return this.apiService.get<DashboardData>(url);
   }
 
   obtenerDepartamentos(): Observable<Departamento[]> {

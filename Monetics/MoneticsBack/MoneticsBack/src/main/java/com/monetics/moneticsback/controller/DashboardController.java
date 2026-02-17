@@ -5,6 +5,7 @@ import com.monetics.moneticsback.service.DashboardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,7 +19,8 @@ public class DashboardController {
     }
 
     @GetMapping
-    public ResponseEntity<DashboardDTO> obtenerDashboard() {
-        return ResponseEntity.ok(dashboardService.obtenerDashboard());
+    public ResponseEntity<DashboardDTO> obtenerDashboard(
+            @RequestParam(required = false) Long idUsuario) {
+        return ResponseEntity.ok(dashboardService.obtenerDashboard(idUsuario));
     }
 }
