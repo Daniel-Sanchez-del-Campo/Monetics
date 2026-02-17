@@ -32,6 +32,14 @@ export class LoginComponent {
   loading = false;
   errorMessage = '';
   hidePassword = true;
+  showForm = false;
+
+  features = [
+    { icon: 'receipt_long', title: 'Tickets con justificante', desc: 'Registra gastos con foto del ticket y conversion automatica de moneda.' },
+    { icon: 'verified', title: 'Flujo de aprobacion', desc: 'Estados de aprobacion con trazabilidad completa de cada gasto.' },
+    { icon: 'dashboard', title: 'Dashboards inteligentes', desc: 'Visualiza gastos en tiempo real con graficos y alertas de presupuesto.' },
+    { icon: 'account_balance', title: 'Control presupuestario', desc: 'Gestiona presupuestos por departamento con alertas automaticas.' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +50,17 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  abrirLogin(): void {
+    this.showForm = true;
+    this.errorMessage = '';
+    this.loginForm.reset();
+  }
+
+  cerrarLogin(): void {
+    this.showForm = false;
+    this.errorMessage = '';
   }
 
   onSubmit(): void {
@@ -58,7 +77,7 @@ export class LoginComponent {
       },
       error: (error) => {
         this.loading = false;
-        this.errorMessage = error.error?.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+        this.errorMessage = error.error?.message || 'Error al iniciar sesion. Verifica tus credenciales.';
       }
     });
   }

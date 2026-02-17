@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 95">
+  <defs>
+    <linearGradient id="receiptGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a8fe0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a2d6e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a9c54;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Receipt/ticket shape with wavy top -->
+  <path d="M5,12 Q10,6 15,12 Q20,18 25,12 Q30,6 35,12 Q40,18 45,12 Q50,6 55,12 Q60,18 65,12 Q70,6 75,12 Q80,18 85,12 L85,88 Q80,94 75,88 Q70,82 65,88 Q60,94 55,88 Q50,82 45,88 Q40,94 35,88 Q30,82 25,88 Q20,94 15,88 Q10,82 5,88 Z" fill="url(#receiptGrad)"/>
+  <!-- Bar chart bars inside receipt -->
+  <rect x="20" y="55" width="12" height="22" rx="2" fill="rgba(255,255,255,0.85)"/>
+  <rect x="38" y="38" width="12" height="39" rx="2" fill="rgba(255,255,255,0.85)"/>
+  <rect x="56" y="24" width="12" height="53" rx="2" fill="rgba(255,255,255,0.85)"/>
+  <!-- Green checkmark -->
+  <path d="M45,72 L58,85 L85,46" stroke="url(#checkGrad)" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
@@ -8,7 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { AuthService, GastoService } from '../../../core/services';
+import { MatIconModule } from '@angular/material/icon';
+import { AuthService, GastoService, CategoriaService } from '../../../core/services';
+import { Categoria } from '../../../core/models';
 
 @Component({
   selector: 'app-nuevo-gasto-dialog',
@@ -22,30 +24,82 @@ import { AuthService, GastoService } from '../../../core/services';
     MatButtonModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatIconModule
   ],
   templateUrl: './nuevo-gasto-dialog.component.html',
   styleUrl: './nuevo-gasto-dialog.component.css'
 })
-export class NuevoGastoDialogComponent {
+export class NuevoGastoDialogComponent implements OnInit {
   gastoForm: FormGroup;
   loading = false;
   errorMessage = '';
 
   monedas = ['EUR', 'USD', 'GBP', 'JPY', 'MXN'];
+  categorias: Categoria[] = [];
+
+  imagePreview: string | null = null;
+  selectedFileName = '';
+  private imageBase64: string | null = null;
+
+  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
   constructor(
     private fb: FormBuilder,
     private gastoService: GastoService,
     private authService: AuthService,
+    private categoriaService: CategoriaService,
     private dialogRef: MatDialogRef<NuevoGastoDialogComponent>
   ) {
     this.gastoForm = this.fb.group({
       descripcion: ['', [Validators.required, Validators.minLength(5)]],
       importeOriginal: ['', [Validators.required, Validators.min(0.01)]],
       monedaOriginal: ['EUR', Validators.required],
-      fechaGasto: [new Date(), Validators.required]
+      fechaGasto: [new Date(), Validators.required],
+      idCategoria: [null]
     });
+  }
+
+  ngOnInit(): void {
+    this.categoriaService.obtenerActivas().subscribe({
+      next: (cats) => this.categorias = cats,
+      error: () => {}
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.errorMessage = 'La imagen no puede superar los 5MB';
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      this.errorMessage = 'Solo se permiten archivos de imagen';
+      return;
+    }
+
+    this.errorMessage = '';
+    this.selectedFileName = file.name;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      this.imagePreview = result;
+      this.imageBase64 = result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeImage(event: Event): void {
+    event.stopPropagation();
+    this.imagePreview = null;
+    this.imageBase64 = null;
+    this.selectedFileName = '';
   }
 
   onSubmit(): void {
@@ -60,10 +114,19 @@ export class NuevoGastoDialogComponent {
     this.errorMessage = '';
 
     const formValue = this.gastoForm.value;
-    const gasto = {
+    const gasto: any = {
       ...formValue,
       fechaGasto: this.formatDate(formValue.fechaGasto)
     };
+
+    if (this.imageBase64) {
+      gasto.imagenTicket = this.imageBase64;
+    }
+
+    // Remove null idCategoria
+    if (!gasto.idCategoria) {
+      delete gasto.idCategoria;
+    }
 
     this.gastoService.crearGasto(currentUser.idUsuario, gasto).subscribe({
       next: () => {

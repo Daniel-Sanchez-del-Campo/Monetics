@@ -3,6 +3,7 @@ package com.monetics.moneticsback.repository;
 import com.monetics.moneticsback.model.Gasto;
 import com.monetics.moneticsback.model.enums.EstadoGasto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * - Filtrar por estado
  * - Obtener gastos del equipo de un manager
  */
-public interface GastoRepository extends JpaRepository<Gasto, Long> {
+public interface GastoRepository extends JpaRepository<Gasto, Long>, JpaSpecificationExecutor<Gasto> {
 
     // Obtener todos los gastos de un usuario concreto
     List<Gasto> findByUsuario_IdUsuario(Long idUsuario);

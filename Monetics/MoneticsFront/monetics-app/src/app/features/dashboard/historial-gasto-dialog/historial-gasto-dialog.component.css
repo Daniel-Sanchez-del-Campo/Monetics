@@ -1,0 +1,221 @@
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: rgba(15, 25, 50, 0.95) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--m-radius-lg) !important;
+}
+
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--m-text-primary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+.title-icon {
+  color: var(--m-accent);
+}
+
+.gasto-desc {
+  color: var(--m-text-muted);
+  font-size: 14px;
+  margin-bottom: 20px;
+  padding-bottom: var(--m-space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+:host ::ng-deep .loading-container mat-spinner circle {
+  stroke: var(--m-accent) !important;
+}
+
+.empty-historial {
+  text-align: center;
+  padding: var(--m-space-2xl) 0;
+  color: var(--m-text-subtle);
+}
+
+.empty-historial .mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--m-space-sm);
+  color: rgba(78, 205, 196, 0.3);
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-item {
+  display: flex;
+  gap: var(--m-space-lg);
+  min-height: 70px;
+}
+
+.timeline-dot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.timeline-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--m-radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--m-transition-fast);
+}
+
+.timeline-dot:hover {
+  transform: scale(1.05);
+}
+
+.timeline-dot .mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.timeline-dot.estado-aprobado {
+  background: rgba(76, 175, 80, 0.15);
+  border: 2px solid rgba(76, 175, 80, 0.4);
+}
+
+.timeline-dot.estado-aprobado .mat-icon {
+  color: var(--m-success);
+}
+
+.timeline-dot.estado-rechazado {
+  background: rgba(244, 67, 54, 0.15);
+  border: 2px solid rgba(244, 67, 54, 0.4);
+}
+
+.timeline-dot.estado-rechazado .mat-icon {
+  color: var(--m-danger);
+}
+
+.timeline-dot.estado-pendiente {
+  background: rgba(255, 152, 0, 0.15);
+  border: 2px solid rgba(255, 152, 0, 0.4);
+}
+
+.timeline-dot.estado-pendiente .mat-icon {
+  color: var(--m-warning);
+}
+
+.timeline-dot.estado-borrador {
+  background: rgba(158, 158, 158, 0.15);
+  border: 2px solid rgba(158, 158, 158, 0.4);
+}
+
+.timeline-dot.estado-borrador .mat-icon {
+  color: #bdbdbd;
+}
+
+.timeline-line {
+  width: 2px;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  margin: var(--m-space-xs) 0;
+}
+
+.timeline-content {
+  flex: 1;
+  padding-bottom: 20px;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.timeline-estado {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 6px;
+}
+
+.timeline-estado.estado-aprobado {
+  background: rgba(76, 175, 80, 0.15);
+  color: var(--m-success);
+}
+
+.timeline-estado.estado-rechazado {
+  background: rgba(244, 67, 54, 0.15);
+  color: var(--m-danger);
+}
+
+.timeline-estado.estado-pendiente {
+  background: rgba(255, 152, 0, 0.15);
+  color: var(--m-warning);
+}
+
+.timeline-estado.estado-borrador {
+  background: rgba(158, 158, 158, 0.15);
+  color: #bdbdbd;
+}
+
+.timeline-fecha {
+  color: var(--m-text-subtle);
+  font-size: 12px;
+}
+
+.timeline-user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  margin-bottom: var(--m-space-xs);
+}
+
+.timeline-user .mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--m-accent);
+}
+
+.timeline-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  color: var(--m-text-muted);
+  font-size: 13px;
+  font-style: italic;
+  padding: var(--m-space-sm) var(--m-space-md);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--m-radius-sm);
+  margin-top: 6px;
+}
+
+.timeline-comment .mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.btn-cancel {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
