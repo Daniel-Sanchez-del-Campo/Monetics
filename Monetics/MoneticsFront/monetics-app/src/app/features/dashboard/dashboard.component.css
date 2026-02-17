@@ -89,10 +89,10 @@
   align-items: center;
   margin-bottom: var(--m-space-xl);
   padding: var(--m-space-xl);
-  background:  rgba(243, 234, 224, 0.75);
+  background: rgba(243, 234, 224, 0.75);
   backdrop-filter: blur(16px);
   border-radius: var(--m-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -101,7 +101,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 26px;
   font-weight: 700;
-  color: #1E293B;
+  color: #000000;
   letter-spacing: -0.5px;
 }
 
@@ -137,11 +137,11 @@
 .glass-card {
   background: rgba(243, 234, 224, 0.75) !important;
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: var(--m-radius-lg) !important;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   margin-bottom: var(--m-space-lg);
-  color: #1E293B;
+  color: #000000;
   transition: box-shadow var(--m-transition), border-color var(--m-transition);
 }
 
@@ -160,14 +160,14 @@
 }
 
 .empty-state h2 {
-  color: #475569;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   margin: var(--m-space-lg) 0 var(--m-space-sm) 0;
 }
 
 .empty-state p {
-  color: #64748B;
+  color: #000000;
   margin-bottom: var(--m-space-xl);
 }
 
@@ -182,7 +182,7 @@
 }
 
 :host ::ng-deep .mat-mdc-header-cell {
-  color: #64748B !important;
+  color: #000000 !important;
   font-family: 'Inter', sans-serif !important;
   font-weight: 600 !important;
   font-size: 12px !important;
@@ -203,7 +203,7 @@
 }
 
 :host ::ng-deep .mat-mdc-cell {
-  color: #334155 !important;
+  color: #000000 !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 14px !important;
   border-bottom-color: rgba(0, 0, 0, 0.06) !important;
@@ -249,7 +249,7 @@
 
 .estado-borrador {
   background: rgba(148, 163, 184, 0.12);
-  color: #64748B;
+  color: #000000;
   border: 1px solid rgba(148, 163, 184, 0.2);
 }
 
@@ -478,7 +478,7 @@
   padding: 20px;
   background: rgba(243, 234, 224, 0.75);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: var(--m-radius-lg);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: transform var(--m-transition), box-shadow var(--m-transition);
@@ -544,14 +544,14 @@
 .kpi-value {
   font-size: 20px;
   font-weight: 700;
-  color: #1E293B;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   line-height: 1.2;
 }
 
 .kpi-label {
   font-size: 13px;
-  color: #64748B;
+  color: #000000;
   margin-top: 2px;
 }
 
@@ -627,12 +627,12 @@
 }
 
 .alerta-info strong {
-  color: #1E293B;
+  color: #000000;
   font-size: 14px;
 }
 
 .alerta-info span {
-  color: #475569;
+  color: #000000;
   font-size: 13px;
 }
 
@@ -696,7 +696,7 @@
 }
 
 .chart-title {
-  color: #1E293B;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -719,7 +719,7 @@
   display: flex;
   align-items: center;
   gap: var(--m-space-sm);
-  color: #1E293B;
+  color: #000000;
   font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 600;
@@ -766,12 +766,12 @@
 }
 
 .presupuesto-display strong {
-  color: #1E293B;
+  color: #000000;
   font-size: 15px;
 }
 
 .presupuesto-valor {
-  color: #64748B;
+  color: #000000;
   font-size: 13px;
 }
 
@@ -788,7 +788,7 @@
 }
 
 .presupuesto-edit strong {
-  color: #1E293B;
+  color: #000000;
   font-size: 15px;
 }
 
@@ -816,7 +816,7 @@
 }
 
 :host ::ng-deep .edit-field .mat-mdc-floating-label {
-  color: #64748B !important;
+  color: #000000 !important;
 }
 
 :host ::ng-deep .edit-field input {
@@ -835,7 +835,7 @@
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #334155;
+  color: #000000;
 }
 
 .cat-dot {
@@ -892,7 +892,7 @@
 }
 
 :host ::ng-deep .filtros-panel .mat-expansion-indicator::after {
-  color: #64748B !important;
+  color: #000000 !important;
 }
 
 :host ::ng-deep .filtros-panel .mat-expansion-panel-body {
@@ -921,7 +921,7 @@
 }
 
 :host ::ng-deep .filtro-field .mat-mdc-floating-label {
-  color: #64748B !important;
+  color: #000000 !important;
 }
 
 :host ::ng-deep .filtro-field input,
@@ -930,11 +930,11 @@
 }
 
 :host ::ng-deep .filtro-field .mat-mdc-select-arrow {
-  color: #64748B !important;
+  color: #000000 !important;
 }
 
 :host ::ng-deep .filtro-field .mat-mdc-form-field-icon-prefix .mat-icon {
-  color: #64748B;
+  color: #000000;
 }
 
 .filtros-actions {
