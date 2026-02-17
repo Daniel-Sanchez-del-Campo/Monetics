@@ -1,17 +1,21 @@
-<h2 mat-dialog-title>Nuevo Gasto</h2>
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon class="title-icon">receipt</mat-icon>
+  Nuevo Gasto
+</h2>
 
 <mat-dialog-content>
   <form [formGroup]="gastoForm">
     <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Descripción</mat-label>
+      <mat-label>Descripcion</mat-label>
       <input matInput formControlName="descripcion" placeholder="Ej: Cena con cliente">
+      <mat-icon matPrefix>description</mat-icon>
       @if (gastoForm.get('descripcion')?.invalid && gastoForm.get('descripcion')?.touched) {
         <mat-error>
           @if (gastoForm.get('descripcion')?.hasError('required')) {
-            La descripción es requerida
+            La descripcion es requerida
           }
           @if (gastoForm.get('descripcion')?.hasError('minlength')) {
-            Mínimo 5 caracteres
+            Minimo 5 caracteres
           }
         </mat-error>
       }
@@ -21,6 +25,7 @@
       <mat-form-field appearance="outline" class="half-width">
         <mat-label>Importe</mat-label>
         <input matInput type="number" formControlName="importeOriginal" placeholder="0.00">
+        <mat-icon matPrefix>payments</mat-icon>
         @if (gastoForm.get('importeOriginal')?.invalid && gastoForm.get('importeOriginal')?.touched) {
           <mat-error>
             @if (gastoForm.get('importeOriginal')?.hasError('required')) {
@@ -40,15 +45,56 @@
             <mat-option [value]="moneda">{{ moneda }}</mat-option>
           }
         </mat-select>
+        <mat-icon matPrefix>currency_exchange</mat-icon>
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" class="full-width">
-      <mat-label>Fecha del Gasto</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="fechaGasto">
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    <div class="row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Fecha del Gasto</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="fechaGasto">
+        <mat-icon matPrefix>calendar_today</mat-icon>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="idCategoria">
+          <mat-option [value]="null">Sin categoria</mat-option>
+          @for (cat of categorias; track cat.idCategoria) {
+            <mat-option [value]="cat.idCategoria">
+              <span class="cat-dot" [style.background]="cat.color"></span>
+              {{ cat.nombre }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <!-- Upload ticket photo -->
+    <div class="upload-area">
+      <span class="upload-label">Foto del ticket (opcional)</span>
+      <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+      <div class="upload-dropzone" [class.has-image]="imagePreview" (click)="fileInput.click()">
+        @if (!imagePreview) {
+          <div class="upload-placeholder">
+            <mat-icon>add_a_photo</mat-icon>
+            <p>Pulsa para subir una foto</p>
+            <small>JPG, PNG - Max 5MB</small>
+          </div>
+        } @else {
+          <div class="image-preview-container">
+            <img [src]="imagePreview" alt="Preview del ticket" class="image-preview">
+            <button mat-mini-fab class="remove-image-btn" (click)="removeImage($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <p class="image-name">{{ selectedFileName }}</p>
+        }
+      </div>
+    </div>
 
     @if (errorMessage) {
       <div class="error-message">
@@ -59,12 +105,15 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="loading">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || gastoForm.invalid">
+  <button mat-button (click)="onCancel()" [disabled]="loading" class="btn-cancel">
+    <mat-icon>close</mat-icon>
+    Cancelar
+  </button>
+  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || gastoForm.invalid" class="btn-save">
     @if (loading) {
       Guardando...
     } @else {
-      Guardar
+      <span><mat-icon>save</mat-icon> Guardar</span>
     }
   </button>
 </mat-dialog-actions>

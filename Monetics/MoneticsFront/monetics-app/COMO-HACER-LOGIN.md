@@ -187,4 +187,3 @@ Una vez que puedas hacer login y todo funcione, puedes personalizar:
 - **Tema Material**: Cambia el tema en `angular.json` (actualmente: indigo-pink)
 - **Estilos de tabla**: Modifica `dashboard.component.css`
 
-¡Disfruta de tu aplicación Monetics! 🚀

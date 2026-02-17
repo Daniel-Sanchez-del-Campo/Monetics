@@ -64,7 +64,7 @@ CREATE TABLE `departamentos` (
 --
 
 INSERT INTO `departamentos` (`id_departamento`, `nombre`, `presupuesto_mensual`, `presupuesto_anual`) VALUES
-(1, 'Tecnología', 50000.00, 600000.00),
+(1, 'Tecnologia', 50000.00, 600000.00),
 (2, 'Finanzas', 30000.00, 360000.00),
 (3, 'Recursos Humanos', 15000.00, 180000.00);
 

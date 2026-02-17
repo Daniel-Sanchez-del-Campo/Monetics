@@ -1,5 +1,6 @@
 package com.monetics.moneticsback.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,9 +29,11 @@ public class Departamento {
     @Column(name = "presupuesto_anual", nullable = false)
     private BigDecimal presupuestoAnual;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "departamento", fetch = FetchType.LAZY)
     private List<Usuario> usuarios;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "departamento", fetch = FetchType.LAZY)
     private List<Gasto> gastos;
 }

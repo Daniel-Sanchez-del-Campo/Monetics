@@ -7,10 +7,15 @@ export interface Gasto {
   estadoGasto: EstadoGasto;
   fechaGasto: string;
   nombreDepartamento: string;
+  imagenTicket?: string;
+  idCategoria?: number;
+  nombreCategoria?: string;
+  colorCategoria?: string;
 }
 
 export enum EstadoGasto {
-  PENDIENTE = 'PENDIENTE',
+  BORRADOR = 'BORRADOR',
+  PENDIENTE_APROBACION = 'PENDIENTE_APROBACION',
   APROBADO = 'APROBADO',
   RECHAZADO = 'RECHAZADO'
 }
@@ -20,4 +25,6 @@ export interface CrearGasto {
   importeOriginal: number;
   monedaOriginal: string;
   fechaGasto: string;
+  imagenTicket?: string;
+  idCategoria?: number;
 }
