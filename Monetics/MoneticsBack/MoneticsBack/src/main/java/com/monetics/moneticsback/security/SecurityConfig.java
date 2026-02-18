@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.Customizer;
 
 /**
  * ========================== SECURITY CONFIG ==========================
@@ -156,6 +157,8 @@ public class SecurityConfig {
                  *   Por lo tanto, el ataque CSRF no es posible en nuestra arquitectura.
                  * - En APIs REST stateless, desactivar CSRF es la práctica estándar.
                  */
+                .cors(Customizer.withDefaults())
+
                 .csrf(csrf -> csrf.disable())
 
                 /**

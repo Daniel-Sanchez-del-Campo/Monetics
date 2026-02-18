@@ -64,12 +64,28 @@
   margin-bottom: 20px;
 }
 
+.hero-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px; /* Espacio hacia el resto del contenido */
+}
+
 .hero-logo {
-  width: 200px;
+  width: 160px;
   height: auto;
-  margin-bottom: 6px;
   filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
   animation: logoFadeIn 0.8s ease;
+  margin-bottom: -10px;
+}
+
+.hero-brand-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 32px;
+  color: var(--m-accent);
+  margin: 0;
 }
 
 @keyframes logoFadeIn {
@@ -276,11 +292,27 @@
   margin-bottom: 28px;
 }
 
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 .login-logo {
   width: 180px;
   height: auto;
-  margin-bottom: 6px;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.15));
+  margin-bottom: -10px;
+}
+
+.login-brand-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 28px;
+  color: var(--m-accent);
+  margin: 0;
 }
 
 .login-title {

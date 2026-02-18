@@ -6,3 +6,4 @@ export * from './usuario.service';
 export * from './dashboard.service';
 export * from './categoria.service';
 export * from './auditoria.service';
+export * from './ticket.service';

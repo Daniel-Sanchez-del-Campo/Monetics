@@ -220,3 +220,63 @@ mat-dialog-actions {
   margin-right: var(--m-space-sm);
   vertical-align: middle;
 }
+
+/* ===== IA ANALYSIS STYLES ===== */
+
+/* Barra de progreso del analisis */
+.analisis-progress {
+  margin-top: var(--m-space-sm);
+  text-align: center;
+}
+
+.analisis-progress mat-progress-bar {
+  margin-bottom: var(--m-space-xs);
+}
+
+.progress-text {
+  color: var(--m-accent);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* Badge de "IA analizado" */
+.ia-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: var(--m-space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Indicadores de confianza en los form-fields */
+.confianza-alta :host ::ng-deep .mdc-notched-outline__leading,
+.confianza-alta :host ::ng-deep .mdc-notched-outline__notch,
+.confianza-alta :host ::ng-deep .mdc-notched-outline__trailing {
+  border-color: rgba(76, 175, 80, 0.5) !important;
+}
+
+.confianza-media :host ::ng-deep .mdc-notched-outline__leading,
+.confianza-media :host ::ng-deep .mdc-notched-outline__notch,
+.confianza-media :host ::ng-deep .mdc-notched-outline__trailing {
+  border-color: rgba(255, 193, 7, 0.5) !important;
+}
+
+.confianza-baja :host ::ng-deep .mdc-notched-outline__leading,
+.confianza-baja :host ::ng-deep .mdc-notched-outline__notch,
+.confianza-baja :host ::ng-deep .mdc-notched-outline__trailing {
+  border-color: rgba(244, 67, 54, 0.5) !important;
+}
+
+/* Icono de confianza (estrellita de IA) */
+.confianza-icon {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  color: #8b5cf6 !important;
+  cursor: help;
+}

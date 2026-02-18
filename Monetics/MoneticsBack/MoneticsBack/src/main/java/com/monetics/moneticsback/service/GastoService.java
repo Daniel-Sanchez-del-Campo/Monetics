@@ -15,6 +15,7 @@ import com.monetics.moneticsback.repository.CategoriaRepository;
 import com.monetics.moneticsback.repository.GastoRepository;
 import com.monetics.moneticsback.repository.specification.GastoSpecification;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,7 @@ public class GastoService {
     private final AuditoriaGastoService auditoriaGastoService;
     private final ExchangeRateService exchangeRateService;
     private final CategoriaRepository categoriaRepository;
+    private GoogleDriveService googleDriveService;
 
     public GastoService(
             GastoRepository gastoRepository,
@@ -52,6 +54,11 @@ public class GastoService {
         this.auditoriaGastoService = auditoriaGastoService;
         this.exchangeRateService = exchangeRateService;
         this.categoriaRepository = categoriaRepository;
+    }
+
+    @Autowired(required = false)
+    public void setGoogleDriveService(GoogleDriveService googleDriveService) {
+        this.googleDriveService = googleDriveService;
     }
 
     /* ============================
@@ -137,7 +144,19 @@ public class GastoService {
         gasto.setFechaGasto(dto.getFechaGasto());
         gasto.setEstadoGasto(EstadoGasto.BORRADOR);
         gasto.setFechaCreacion(LocalDateTime.now());
-        gasto.setImagenTicket(dto.getImagenTicket());
+
+        // Campos de Google Drive (nuevo)
+        gasto.setDriveFileId(dto.getDriveFileId());
+        gasto.setDriveFileUrl(dto.getDriveFileUrl());
+        gasto.setImagenNombre(dto.getImagenNombre());
+
+        // Campos de IA (nuevo)
+        if (dto.getAnalizadoPorIa() != null) {
+            gasto.setAnalizadoPorIa(dto.getAnalizadoPorIa());
+        }
+        if (dto.getIaConfianza() != null) {
+            gasto.setIaConfianza(dto.getIaConfianza());
+        }
 
         // Conversión de divisa usando API ExchangeRate
         BigDecimal tipoCambio = exchangeRateService.obtenerTipoCambioAEur(dto.getMonedaOriginal());
@@ -163,13 +182,25 @@ public class GastoService {
     @Transactional
     public void eliminarGasto(Long idGasto) {
         Gasto gasto = obtenerGastoValido(idGasto);
+        eliminarArchivoDrive(gasto);
         gastoRepository.delete(gasto);
     }
 
     @Transactional
     public void eliminarGastos(List<Long> ids) {
         List<Gasto> gastos = gastoRepository.findAllById(ids);
+        gastos.forEach(this::eliminarArchivoDrive);
         gastoRepository.deleteAll(gastos);
+    }
+
+    private void eliminarArchivoDrive(Gasto gasto) {
+        if (googleDriveService != null && gasto.getDriveFileId() != null && !gasto.getDriveFileId().isBlank()) {
+            try {
+                googleDriveService.eliminarArchivo(gasto.getDriveFileId());
+            } catch (Exception e) {
+                System.err.println("Error eliminando archivo de Drive para gasto #" + gasto.getIdGasto() + ": " + e.getMessage());
+            }
+        }
     }
 
     /* ============================
@@ -273,8 +304,16 @@ public class GastoService {
         dto.setImporteEur(gasto.getImporteEur());
         dto.setEstadoGasto(gasto.getEstadoGasto());
         dto.setFechaGasto(gasto.getFechaGasto());
-        dto.setImagenTicket(gasto.getImagenTicket());
         dto.setNombreDepartamento(gasto.getDepartamento().getNombre());
+
+        // Campos de Drive (nuevo)
+        dto.setDriveFileId(gasto.getDriveFileId());
+        dto.setDriveFileUrl(gasto.getDriveFileUrl());
+        dto.setImagenNombre(gasto.getImagenNombre());
+
+        // Campos de IA (nuevo)
+        dto.setAnalizadoPorIa(gasto.getAnalizadoPorIa());
+        dto.setIaConfianza(gasto.getIaConfianza());
 
         if (gasto.getCategoria() != null) {
             dto.setIdCategoria(gasto.getCategoria().getIdCategoria());

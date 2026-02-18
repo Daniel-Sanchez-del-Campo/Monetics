@@ -5,10 +5,55 @@
 
 <mat-dialog-content>
   <form [formGroup]="gastoForm">
-    <mat-form-field appearance="outline" class="full-width">
+
+    <!-- Upload ticket photo (PRIMERO para que la IA prerellene el resto) -->
+    <div class="upload-area">
+      <span class="upload-label">
+        Foto del ticket (opcional)
+        @if (analisisCompletado) {
+          <span class="ia-badge">IA analizado</span>
+        }
+      </span>
+      <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
+      <div class="upload-dropzone" [class.has-image]="imagePreview" (click)="fileInput.click()">
+        @if (!imagePreview) {
+          <div class="upload-placeholder">
+            <mat-icon>add_a_photo</mat-icon>
+            <p>Sube una foto del ticket y lo analizaremos automaticamente</p>
+            <small>JPG, PNG - Max 5MB</small>
+          </div>
+        } @else {
+          <div class="image-preview-container">
+            <img [src]="imagePreview" alt="Preview del ticket" class="image-preview">
+            <button mat-mini-fab class="remove-image-btn" (click)="removeImage($event)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <p class="image-name">{{ selectedFileName }}</p>
+        }
+      </div>
+
+      <!-- Barra de progreso del analisis -->
+      @if (analizando) {
+        <div class="analisis-progress">
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          <span class="progress-text">{{ mensajeProgreso }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Descripcion -->
+    <mat-form-field appearance="outline" class="full-width"
+                    [class]="getConfianzaClass('descripcion')">
       <mat-label>Descripcion</mat-label>
       <input matInput formControlName="descripcion" placeholder="Ej: Cena con cliente">
       <mat-icon matPrefix>description</mat-icon>
+      @if (getConfianzaTooltip('descripcion')) {
+        <mat-icon matSuffix class="confianza-icon"
+                  [matTooltip]="getConfianzaTooltip('descripcion')">
+          auto_awesome
+        </mat-icon>
+      }
       @if (gastoForm.get('descripcion')?.invalid && gastoForm.get('descripcion')?.touched) {
         <mat-error>
           @if (gastoForm.get('descripcion')?.hasError('required')) {
@@ -21,11 +66,19 @@
       }
     </mat-form-field>
 
+    <!-- Importe y Moneda -->
     <div class="row">
-      <mat-form-field appearance="outline" class="half-width">
+      <mat-form-field appearance="outline" class="half-width"
+                      [class]="getConfianzaClass('importe')">
         <mat-label>Importe</mat-label>
         <input matInput type="number" formControlName="importeOriginal" placeholder="0.00">
         <mat-icon matPrefix>payments</mat-icon>
+        @if (getConfianzaTooltip('importe')) {
+          <mat-icon matSuffix class="confianza-icon"
+                    [matTooltip]="getConfianzaTooltip('importe')">
+            auto_awesome
+          </mat-icon>
+        }
         @if (gastoForm.get('importeOriginal')?.invalid && gastoForm.get('importeOriginal')?.touched) {
           <mat-error>
             @if (gastoForm.get('importeOriginal')?.hasError('required')) {
@@ -38,7 +91,8 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="half-width">
+      <mat-form-field appearance="outline" class="half-width"
+                      [class]="getConfianzaClass('moneda')">
         <mat-label>Moneda</mat-label>
         <mat-select formControlName="monedaOriginal">
           @for (moneda of monedas; track moneda) {
@@ -49,8 +103,10 @@
       </mat-form-field>
     </div>
 
+    <!-- Fecha y Categoria -->
     <div class="row">
-      <mat-form-field appearance="outline" class="half-width">
+      <mat-form-field appearance="outline" class="half-width"
+                      [class]="getConfianzaClass('fecha')">
         <mat-label>Fecha del Gasto</mat-label>
         <input matInput [matDatepicker]="picker" formControlName="fechaGasto">
         <mat-icon matPrefix>calendar_today</mat-icon>
@@ -58,7 +114,8 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="half-width">
+      <mat-form-field appearance="outline" class="half-width"
+                      [class]="getConfianzaClass('categoria')">
         <mat-label>Categoria</mat-label>
         <mat-select formControlName="idCategoria">
           <mat-option [value]="null">Sin categoria</mat-option>
@@ -73,29 +130,6 @@
       </mat-form-field>
     </div>
 
-    <!-- Upload ticket photo -->
-    <div class="upload-area">
-      <span class="upload-label">Foto del ticket (opcional)</span>
-      <input type="file" #fileInput hidden accept="image/*" (change)="onFileSelected($event)">
-      <div class="upload-dropzone" [class.has-image]="imagePreview" (click)="fileInput.click()">
-        @if (!imagePreview) {
-          <div class="upload-placeholder">
-            <mat-icon>add_a_photo</mat-icon>
-            <p>Pulsa para subir una foto</p>
-            <small>JPG, PNG - Max 5MB</small>
-          </div>
-        } @else {
-          <div class="image-preview-container">
-            <img [src]="imagePreview" alt="Preview del ticket" class="image-preview">
-            <button mat-mini-fab class="remove-image-btn" (click)="removeImage($event)">
-              <mat-icon>close</mat-icon>
-            </button>
-          </div>
-          <p class="image-name">{{ selectedFileName }}</p>
-        }
-      </div>
-    </div>
-
     @if (errorMessage) {
       <div class="error-message">
         {{ errorMessage }}
@@ -105,11 +139,12 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="loading" class="btn-cancel">
+  <button mat-button (click)="onCancel()" [disabled]="loading || analizando" class="btn-cancel">
     <mat-icon>close</mat-icon>
     Cancelar
   </button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="loading || gastoForm.invalid" class="btn-save">
+  <button mat-raised-button color="primary" (click)="onSubmit()"
+          [disabled]="loading || analizando || gastoForm.invalid" class="btn-save">
     @if (loading) {
       Guardando...
     } @else {

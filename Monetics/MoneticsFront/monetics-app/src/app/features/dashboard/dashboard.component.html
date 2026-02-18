@@ -3,6 +3,7 @@
   <div class="toolbar">
     <div class="toolbar-left">
       <img src="assets/logo-monetics.png" alt="Monetics" class="toolbar-logo">
+      <h2 class="toolbar-title">Monetics</h2>
     </div>
     <div class="toolbar-right">
       @if (currentUser) {
@@ -355,7 +356,7 @@
                 <td mat-cell *matCellDef="let gasto">
                   <div class="descripcion-cell">
                     <span>{{ gasto.descripcion }}</span>
-                    @if (gasto.imagenTicket) {
+                    @if (gasto.driveFileUrl || gasto.imagenTicket) {
                       <button mat-icon-button class="btn-ver-ticket" (click)="$event.stopPropagation(); verImagen(gasto)" title="Ver ticket">
                         <mat-icon>image</mat-icon>
                       </button>

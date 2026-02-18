@@ -47,8 +47,26 @@ public class Gasto {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
+    // Campo antiguo (se mantiene temporalmente para migracion)
     @Column(name = "imagen_ticket", columnDefinition = "LONGTEXT")
     private String imagenTicket;
+
+    // Campos de Google Drive
+    @Column(name = "drive_file_id", length = 255)
+    private String driveFileId;
+
+    @Column(name = "drive_file_url", length = 500)
+    private String driveFileUrl;
+
+    @Column(name = "imagen_nombre", length = 255)
+    private String imagenNombre;
+
+    // Campos de IA
+    @Column(name = "analizado_por_ia")
+    private Boolean analizadoPorIa = false;
+
+    @Column(name = "ia_confianza")
+    private BigDecimal iaConfianza;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", nullable = false)

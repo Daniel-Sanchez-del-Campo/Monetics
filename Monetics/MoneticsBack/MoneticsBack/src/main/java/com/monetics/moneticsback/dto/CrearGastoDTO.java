@@ -3,13 +3,6 @@ package com.monetics.moneticsback.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * DTO utilizado para la creación de un gasto desde el frontend.
- *
- * Contiene únicamente los datos que el usuario puede introducir.
- * El resto de campos (estado, fechas, auditoría) se gestionan
- * en el backend.
- */
 public class CrearGastoDTO {
 
     private String descripcion;
@@ -17,62 +10,49 @@ public class CrearGastoDTO {
     private String monedaOriginal;
     private LocalDate fechaGasto;
     private Long idDepartamento;
-    private String imagenTicket;
     private Long idCategoria;
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+    // Nuevos campos de Drive (sustituyen a imagenTicket)
+    private String driveFileId;
+    private String driveFileUrl;
+    private String imagenNombre;
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+    // Campos de IA
+    private Boolean analizadoPorIa;
+    private BigDecimal iaConfianza;
 
-    public BigDecimal getImporteOriginal() {
-        return importeOriginal;
-    }
+    // --- Getters y Setters ---
 
-    public void setImporteOriginal(BigDecimal importeOriginal) {
-        this.importeOriginal = importeOriginal;
-    }
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
-    public String getMonedaOriginal() {
-        return monedaOriginal;
-    }
+    public BigDecimal getImporteOriginal() { return importeOriginal; }
+    public void setImporteOriginal(BigDecimal importeOriginal) { this.importeOriginal = importeOriginal; }
 
-    public void setMonedaOriginal(String monedaOriginal) {
-        this.monedaOriginal = monedaOriginal;
-    }
+    public String getMonedaOriginal() { return monedaOriginal; }
+    public void setMonedaOriginal(String monedaOriginal) { this.monedaOriginal = monedaOriginal; }
 
-    public LocalDate getFechaGasto() {
-        return fechaGasto;
-    }
+    public LocalDate getFechaGasto() { return fechaGasto; }
+    public void setFechaGasto(LocalDate fechaGasto) { this.fechaGasto = fechaGasto; }
 
-    public void setFechaGasto(LocalDate fechaGasto) {
-        this.fechaGasto = fechaGasto;
-    }
+    public Long getIdDepartamento() { return idDepartamento; }
+    public void setIdDepartamento(Long idDepartamento) { this.idDepartamento = idDepartamento; }
 
-    public Long getIdDepartamento() {
-        return idDepartamento;
-    }
+    public Long getIdCategoria() { return idCategoria; }
+    public void setIdCategoria(Long idCategoria) { this.idCategoria = idCategoria; }
 
-    public void setIdDepartamento(Long idDepartamento) {
-        this.idDepartamento = idDepartamento;
-    }
+    public String getDriveFileId() { return driveFileId; }
+    public void setDriveFileId(String driveFileId) { this.driveFileId = driveFileId; }
 
-    public String getImagenTicket() {
-        return imagenTicket;
-    }
+    public String getDriveFileUrl() { return driveFileUrl; }
+    public void setDriveFileUrl(String driveFileUrl) { this.driveFileUrl = driveFileUrl; }
 
-    public void setImagenTicket(String imagenTicket) {
-        this.imagenTicket = imagenTicket;
-    }
+    public String getImagenNombre() { return imagenNombre; }
+    public void setImagenNombre(String imagenNombre) { this.imagenNombre = imagenNombre; }
 
-    public Long getIdCategoria() {
-        return idCategoria;
-    }
+    public Boolean getAnalizadoPorIa() { return analizadoPorIa; }
+    public void setAnalizadoPorIa(Boolean analizadoPorIa) { this.analizadoPorIa = analizadoPorIa; }
 
-    public void setIdCategoria(Long idCategoria) {
-        this.idCategoria = idCategoria;
-    }
+    public BigDecimal getIaConfianza() { return iaConfianza; }
+    public void setIaConfianza(BigDecimal iaConfianza) { this.iaConfianza = iaConfianza; }
 }

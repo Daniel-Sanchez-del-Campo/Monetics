@@ -424,7 +424,10 @@ export class DashboardComponent implements OnInit {
   }
 
   verImagen(gasto: Gasto): void {
-    if (gasto.imagenTicket) {
+    // Priorizar Drive URL, fallback a Base64 (para datos antiguos no migrados)
+    if (gasto.driveFileUrl) {
+      this.imagenAbierta = gasto.driveFileUrl;
+    } else if (gasto.imagenTicket) {
       this.imagenAbierta = gasto.imagenTicket;
     }
   }
