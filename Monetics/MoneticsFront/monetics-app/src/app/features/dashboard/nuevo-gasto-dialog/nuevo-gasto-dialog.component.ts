@@ -69,7 +69,7 @@ export class NuevoGastoDialogComponent implements OnInit {
     private dialogRef: MatDialogRef<NuevoGastoDialogComponent>
   ) {
     this.gastoForm = this.fb.group({
-      descripcion: ['', [Validators.required, Validators.minLength(5)]],
+      descripcion: ['', [Validators.required, Validators.minLength(3)]],
       importeOriginal: ['', [Validators.required, Validators.min(0.01)]],
       monedaOriginal: ['EUR', Validators.required],
       fechaGasto: [new Date(), Validators.required],
