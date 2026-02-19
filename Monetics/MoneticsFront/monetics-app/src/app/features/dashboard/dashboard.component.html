@@ -1,0 +1,461 @@
+<div class="dashboard-container">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <img src="assets/logo-monetics.png" alt="Monetics" class="toolbar-logo">
+      <h2 class="toolbar-title">Monetics</h2>
+    </div>
+    <div class="toolbar-right">
+      @if (currentUser) {
+        <div class="user-info">
+          <mat-icon>person</mat-icon>
+          <span class="user-name">{{ currentUser.nombre }}</span>
+          <span class="user-role">{{ currentUser.rol }}</span>
+        </div>
+        @if (authService.isAdmin) {
+          <button mat-icon-button class="admin-btn" routerLink="/admin/usuarios" title="Gestion de Usuarios">
+            <mat-icon>admin_panel_settings</mat-icon>
+          </button>
+        }
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="menu-btn">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Cerrar sesion</span>
+          </button>
+        </mat-menu>
+      }
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="header">
+      <h1>
+        @if (authService.isAdmin) {
+          Todos los Gastos
+        } @else if (authService.isManager) {
+          Gastos del Equipo
+        } @else {
+          Mis Gastos
+        }
+      </h1>
+      <div class="header-actions">
+        @if (authService.isAdmin && selection.selected.length > 0) {
+          <button mat-raised-button class="btn-delete" (click)="eliminarSeleccionados()">
+            <mat-icon>delete</mat-icon>
+            Eliminar ({{ selection.selected.length }})
+          </button>
+        }
+        @if (!authService.isManager) {
+          <button mat-raised-button color="primary" (click)="nuevoGasto()" class="btn-add">
+            <mat-icon>add_circle</mat-icon>
+            Nuevo Gasto
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    @if (dashboardData) {
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-blue">receipt_long</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.totalGastos }}</span>
+            <span class="kpi-label">Total gastos</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-orange">hourglass_top</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.totalPendienteReembolso | number:'1.2-2' }} EUR</span>
+            <span class="kpi-label">Pendiente reembolso</span>
+          </div>
+        </div>
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-green">trending_up</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.totalGastosMes | number:'1.2-2' }} EUR</span>
+            <span class="kpi-label">Gastos este mes</span>
+            @if (dashboardData.variacionMensualPorcentaje !== null && dashboardData.variacionMensualPorcentaje !== undefined) {
+              <span class="kpi-variation" [class.variation-up]="dashboardData.variacionMensualPorcentaje > 0" [class.variation-down]="dashboardData.variacionMensualPorcentaje < 0">
+                <mat-icon>{{ dashboardData.variacionMensualPorcentaje >= 0 ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+                {{ dashboardData.variacionMensualPorcentaje | number:'1.1-1' }}% vs mes anterior
+              </span>
+            }
+          </div>
+        </div>
+        <div class="kpi-card">
+          <mat-icon class="kpi-icon kpi-yellow">pending_actions</mat-icon>
+          <div class="kpi-info">
+            <span class="kpi-value">{{ dashboardData.gastosPendientes }}</span>
+            <span class="kpi-label">Pendientes aprobacion</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas de presupuesto (solo admin y manager) -->
+      @if ((authService.isAdmin || authService.isManager) && dashboardData.alertasPresupuesto.length > 0) {
+        <div class="alertas-section">
+          @for (alerta of dashboardData.alertasPresupuesto; track alerta.departamento) {
+            <div class="alerta-card" [class.alerta-critica]="alerta.nivelAlerta === 'CRITICAL'" [class.alerta-warning]="alerta.nivelAlerta === 'WARNING'">
+              <mat-icon class="alerta-icon">{{ alerta.nivelAlerta === 'CRITICAL' ? 'error' : 'warning' }}</mat-icon>
+              <div class="alerta-info">
+                <div class="alerta-header-row">
+                  <strong>{{ alerta.departamento }}</strong>
+                  <span class="alerta-nivel" [class.nivel-critical]="alerta.nivelAlerta === 'CRITICAL'">{{ alerta.nivelAlerta }}</span>
+                </div>
+                <span>{{ alerta.gastoActual | number:'1.2-2' }} / {{ alerta.presupuestoMensual | number:'1.2-2' }} EUR ({{ alerta.porcentajeUsado | number:'1.0-0' }}%)</span>
+              </div>
+              <div class="alerta-barra">
+                <div class="alerta-progreso" [style.width.%]="alerta.porcentajeUsado > 100 ? 100 : alerta.porcentajeUsado"></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Charts (solo admin y manager) -->
+      @if (authService.isAdmin || authService.isManager) {
+        <div class="charts-grid">
+          <mat-card class="glass-card chart-card">
+            <mat-card-content>
+              <h3 class="chart-title">Gastos por Departamento</h3>
+              <div class="chart-container">
+                <canvas baseChart
+                  [data]="barChartData"
+                  [options]="barChartOptions"
+                  type="bar">
+                </canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="glass-card chart-card">
+            <mat-card-content>
+              <h3 class="chart-title">Estado de Gastos</h3>
+              <div class="chart-container">
+                <canvas baseChart
+                  [data]="doughnutChartData"
+                  [options]="doughnutChartOptions"
+                  type="doughnut">
+                </canvas>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <!-- Category chart -->
+        @if (dashboardData.gastosPorCategoria && dashboardData.gastosPorCategoria.length > 0) {
+          <div class="charts-grid charts-single">
+            <mat-card class="glass-card chart-card">
+              <mat-card-content>
+                <h3 class="chart-title">Gastos por Categoria</h3>
+                <div class="chart-container">
+                  <canvas baseChart
+                    [data]="categoryChartData"
+                    [options]="categoryChartOptions"
+                    type="doughnut">
+                  </canvas>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        }
+      }
+    }
+
+    <!-- Admin: Configurar presupuestos -->
+    @if (authService.isAdmin && departamentos.length > 0) {
+      <mat-card class="glass-card presupuesto-card">
+        <mat-card-content>
+          <h3 class="section-title">
+            <mat-icon>account_balance</mat-icon>
+            Presupuestos por Departamento
+          </h3>
+          <div class="presupuesto-grid">
+            @for (depto of departamentos; track depto.idDepartamento) {
+              <div class="presupuesto-item">
+                @if (editingDepto?.idDepartamento === depto.idDepartamento) {
+                  <div class="presupuesto-edit">
+                    <strong>{{ depto.nombre }}</strong>
+                    <div class="edit-fields">
+                      <mat-form-field appearance="outline" class="edit-field">
+                        <mat-label>Mensual (EUR)</mat-label>
+                        <input matInput type="number" [(ngModel)]="editPresMensual">
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="edit-field">
+                        <mat-label>Anual (EUR)</mat-label>
+                        <input matInput type="number" [(ngModel)]="editPresAnual">
+                      </mat-form-field>
+                    </div>
+                    <div class="edit-actions">
+                      <button mat-raised-button class="btn-add" (click)="guardarPresupuesto()">Guardar</button>
+                      <button mat-button (click)="cancelarEdicion()" style="color: #e0e6ed;">Cancelar</button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="presupuesto-display">
+                    <strong>{{ depto.nombre }}</strong>
+                    <span class="presupuesto-valor">Mensual: {{ depto.presupuestoMensual | number:'1.2-2' }} EUR</span>
+                    <span class="presupuesto-valor">Anual: {{ depto.presupuestoAnual | number:'1.2-2' }} EUR</span>
+                    <button mat-icon-button class="btn-action btn-enviar" (click)="editarPresupuesto(depto)" title="Editar">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+
+    <!-- Filtros avanzados -->
+    <mat-card class="glass-card filtros-card">
+      <mat-card-content>
+        <mat-expansion-panel class="filtros-panel" [(expanded)]="filtrosAbiertos">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon>filter_list</mat-icon>
+              Filtros avanzados
+              @if (filtrosActivos) {
+                <span class="filtro-badge">Activos</span>
+              }
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="filtros-grid">
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Estado</mat-label>
+              <mat-icon matPrefix>flag</mat-icon>
+              <mat-select [(ngModel)]="filtroEstado">
+                <mat-option value="">Todos</mat-option>
+                <mat-option value="BORRADOR">Borrador</mat-option>
+                <mat-option value="PENDIENTE_APROBACION">Pendiente</mat-option>
+                <mat-option value="APROBADO">Aprobado</mat-option>
+                <mat-option value="RECHAZADO">Rechazado</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Departamento</mat-label>
+              <mat-icon matPrefix>business</mat-icon>
+              <mat-select [(ngModel)]="filtroDepartamento">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (depto of departamentos; track depto.idDepartamento) {
+                  <mat-option [value]="depto.idDepartamento">{{ depto.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Categoria</mat-label>
+              <mat-icon matPrefix>label</mat-icon>
+              <mat-select [(ngModel)]="filtroCategoria">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (cat of categorias; track cat.idCategoria) {
+                  <mat-option [value]="cat.idCategoria">{{ cat.nombre }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Buscar texto</mat-label>
+              <input matInput [(ngModel)]="filtroTexto" placeholder="Descripcion...">
+              <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Fecha desde</mat-label>
+              <input matInput [matDatepicker]="pickerDesde" [(ngModel)]="filtroFechaDesde">
+              <mat-datepicker-toggle matIconSuffix [for]="pickerDesde"></mat-datepicker-toggle>
+              <mat-datepicker #pickerDesde></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Fecha hasta</mat-label>
+              <input matInput [matDatepicker]="pickerHasta" [(ngModel)]="filtroFechaHasta">
+              <mat-datepicker-toggle matIconSuffix [for]="pickerHasta"></mat-datepicker-toggle>
+              <mat-datepicker #pickerHasta></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Importe min (EUR)</mat-label>
+              <mat-icon matPrefix>euro</mat-icon>
+              <input matInput type="number" [(ngModel)]="filtroImporteMin">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filtro-field">
+              <mat-label>Importe max (EUR)</mat-label>
+              <mat-icon matPrefix>euro</mat-icon>
+              <input matInput type="number" [(ngModel)]="filtroImporteMax">
+            </mat-form-field>
+          </div>
+
+          <div class="filtros-actions">
+            <button mat-raised-button class="btn-add" (click)="aplicarFiltros()">
+              <mat-icon>search</mat-icon>
+              Aplicar filtros
+            </button>
+            <button mat-button (click)="limpiarFiltros()" style="color: #e0e6ed;">
+              <mat-icon>clear</mat-icon>
+              Limpiar
+            </button>
+          </div>
+        </mat-expansion-panel>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla de gastos -->
+    @if (loading) {
+      <div class="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else {
+      @if (gastos.length === 0) {
+        <mat-card class="glass-card empty-state">
+          <mat-card-content>
+            <mat-icon class="empty-icon">receipt_long</mat-icon>
+            <h2>No hay gastos registrados</h2>
+            @if (!authService.isManager) {
+              <p>Comienza agregando tu primer gasto</p>
+              <button mat-raised-button color="primary" (click)="nuevoGasto()" class="btn-add">
+                <mat-icon>add_circle</mat-icon>
+                Agregar Gasto
+              </button>
+            }
+          </mat-card-content>
+        </mat-card>
+      } @else {
+        <mat-card class="glass-card">
+          <mat-card-content>
+            <table mat-table [dataSource]="gastos" class="gastos-table">
+
+              <!-- Checkbox Column (solo admin) -->
+              @if (authService.isAdmin) {
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                      (change)="$event ? masterToggle() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()"
+                      color="primary">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let gasto">
+                    <mat-checkbox
+                      (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(gasto) : null"
+                      [checked]="selection.isSelected(gasto)"
+                      color="primary">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+              }
+
+              <ng-container matColumnDef="descripcion">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">description</mat-icon> Descripcion</th>
+                <td mat-cell *matCellDef="let gasto">
+                  <div class="descripcion-cell">
+                    <span>{{ gasto.descripcion }}</span>
+                    @if (gasto.imagenNombre || gasto.driveFileUrl || gasto.imagenTicket) {
+                      <button mat-icon-button class="btn-ver-ticket" (click)="$event.stopPropagation(); verImagen(gasto)" title="Ver ticket">
+                        <mat-icon>image</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="categoria">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">label</mat-icon> Categoria</th>
+                <td mat-cell *matCellDef="let gasto">
+                  @if (gasto.nombreCategoria) {
+                    <span class="categoria-badge">
+                      <span class="cat-dot" [style.background]="gasto.colorCategoria"></span>
+                      {{ gasto.nombreCategoria }}
+                    </span>
+                  } @else {
+                    <span class="sin-categoria">-</span>
+                  }
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="fechaGasto">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">calendar_today</mat-icon> Fecha</th>
+                <td mat-cell *matCellDef="let gasto">{{ gasto.fechaGasto | date:'dd/MM/yyyy' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="importeOriginal">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">payments</mat-icon> Importe original</th>
+                <td mat-cell *matCellDef="let gasto">
+                  {{ gasto.importeOriginal | number:'1.2-2' }} {{ gasto.monedaOriginal }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="importeEur">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">euro</mat-icon> Importe EUR</th>
+                <td mat-cell *matCellDef="let gasto">
+                  {{ gasto.importeEur | number:'1.2-2' }} EUR
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="estadoGasto">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">flag</mat-icon> Estado</th>
+                <td mat-cell *matCellDef="let gasto">
+                  <span class="estado-badge" [ngClass]="'estado-' + gasto.estadoGasto.toLowerCase()">
+                    {{ gasto.estadoGasto }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef><mat-icon class="th-icon">tune</mat-icon> Acciones</th>
+                <td mat-cell *matCellDef="let gasto">
+                  <div class="action-buttons">
+                    <button mat-icon-button class="btn-action btn-historial" (click)="$event.stopPropagation(); verHistorial(gasto)" title="Ver historial">
+                      <mat-icon>history</mat-icon>
+                    </button>
+                    @if (!authService.isAdmin && !authService.isManager && gasto.estadoGasto === 'BORRADOR') {
+                      <button mat-icon-button class="btn-action btn-enviar" (click)="$event.stopPropagation(); enviarARevision(gasto)" title="Enviar a revision">
+                        <mat-icon>send</mat-icon>
+                      </button>
+                    }
+                    @if ((authService.isAdmin || authService.isManager) && gasto.estadoGasto !== 'APROBADO' && gasto.estadoGasto !== 'RECHAZADO') {
+                      <button mat-icon-button class="btn-action btn-aprobar" (click)="$event.stopPropagation(); aprobarGasto(gasto)" title="Aprobar">
+                        <mat-icon>check_circle</mat-icon>
+                      </button>
+                      <button mat-icon-button class="btn-action btn-rechazar" (click)="$event.stopPropagation(); rechazarGasto(gasto)" title="Rechazar">
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                  [class.selected-row]="selection.isSelected(row)"
+                  (click)="authService.isAdmin ? selection.toggle(row) : null"></tr>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      }
+    }
+  </div>
+
+  <!-- Image overlay -->
+  @if (imagenAbierta) {
+    <div class="imagen-overlay" (click)="cerrarImagen()">
+      <div class="imagen-overlay-content" (click)="$event.stopPropagation()">
+        <button mat-icon-button class="imagen-close" (click)="cerrarImagen()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <img [src]="imagenAbierta" alt="Ticket" class="imagen-ticket-full">
+      </div>
+    </div>
+  }
+</div>

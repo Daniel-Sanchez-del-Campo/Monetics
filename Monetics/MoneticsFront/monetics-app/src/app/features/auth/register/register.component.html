@@ -1,0 +1,87 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <div class="logo-header">
+      <div class="logo-brand">
+        <img src="assets/logo-monetics.png" alt="Monetics" class="logo">
+        <h2 class="logo-brand-title">Monetics</h2>
+      </div>
+    </div>
+    <mat-card-header>
+      <mat-card-title>Crear Cuenta</mat-card-title>
+      <mat-card-subtitle>Gestión de Gastos Corporativos</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nombre Completo</mat-label>
+          <input matInput type="text" formControlName="nombre" placeholder="Juan Perez">
+          <mat-icon matPrefix>person</mat-icon>
+          @if (nombreControl?.invalid && nombreControl?.touched) {
+            <mat-error>
+              @if (nombreControl?.hasError('required')) {
+                El nombre es requerido
+              }
+              @if (nombreControl?.hasError('minlength')) {
+                Mínimo 3 caracteres
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="usuario@ejemplo.com">
+          <mat-icon matPrefix>email</mat-icon>
+          @if (emailControl?.invalid && emailControl?.touched) {
+            <mat-error>
+              @if (emailControl?.hasError('required')) {
+                Email es requerido
+              }
+              @if (emailControl?.hasError('email')) {
+                Email inválido
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Contraseña</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          <mat-icon matPrefix>lock</mat-icon>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (passwordControl?.invalid && passwordControl?.touched) {
+            <mat-error>
+              @if (passwordControl?.hasError('required')) {
+                Contraseña requerida
+              }
+              @if (passwordControl?.hasError('minlength')) {
+                Mínimo 6 caracteres
+              }
+            </mat-error>
+          }
+        </mat-form-field>
+
+        @if (errorMessage) {
+          <div class="error-message">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading">
+          @if (loading) {
+            <mat-spinner diameter="20"></mat-spinner>
+          } @else {
+            <span><mat-icon>person_add</mat-icon> Registrarse</span>
+          }
+        </button>
+
+        <div class="login-link">
+          ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión aquí</a>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

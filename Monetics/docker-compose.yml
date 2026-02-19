@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: monetics-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: Monetics
+    ports:
+      - "3306:3306"
+    volumes:
+      - monetics_mysql:/var/lib/mysql
+      - ../monetics.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD", "mysql", "-u", "root", "-p1234", "-e", "SELECT 1 FROM Monetics.usuarios LIMIT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+  backend:
+    build:
+      context: ./MoneticsBack/MoneticsBack
+      dockerfile: Dockerfile
+    container_name: monetics-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/Monetics?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 1234
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  monetics_mysql:

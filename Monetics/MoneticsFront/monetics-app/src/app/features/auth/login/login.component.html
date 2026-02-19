@@ -1,0 +1,129 @@
+<div class="landing-page">
+
+  <!-- Background decorations -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Landing content -->
+  <div class="landing-content" [class.landing-dimmed]="showForm">
+
+    <!-- Hero section -->
+    <div class="hero">
+      <div class="hero-brand">
+        <img src="assets/logo-monetics.png" alt="Monetics" class="hero-logo">
+        <h2 class="hero-brand-title">Monetics</h2>
+      </div>
+      <h1 class="hero-title">Gestión inteligente de gastos empresariales</h1>
+      <p class="hero-subtitle">
+        Monetics es la plataforma corporativa que permite a las empresas gestionar
+        de forma eficiente los gastos de sus empleados. Registra tickets con justificante,
+        controla presupuestos por departamento y visualiza gastos en tiempo real
+        mediante dashboards inteligentes.
+      </p>
+
+      <button class="hero-cta" (click)="abrirLogin()">
+        <mat-icon>login</mat-icon>
+        Iniciar sesión
+      </button>
+
+      <div class="hero-register">
+        ¿No tienes cuenta? <a routerLink="/register">Registrate aquí</a>
+      </div>
+    </div>
+
+    <!-- Features grid -->
+    <div class="features-grid">
+      @for (feat of features; track feat.icon) {
+        <div class="feature-card">
+          <div class="feature-icon-wrap">
+            <mat-icon>{{ feat.icon }}</mat-icon>
+          </div>
+          <h3 class="feature-title">{{ feat.title }}</h3>
+          <p class="feature-desc">{{ feat.desc }}</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Login overlay + form -->
+  @if (showForm) {
+    <div class="login-overlay" (click)="cerrarLogin()">
+      <div class="login-card" (click)="$event.stopPropagation()">
+
+        <button mat-icon-button class="login-close" (click)="cerrarLogin()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <div class="login-header">
+          <div class="login-brand">
+            <img src="assets/logo-monetics.png" alt="Monetics" class="login-logo">
+            <h2 class="login-brand-title">Monetics</h2>
+          </div>
+          <h2 class="login-title">Acceder a tu cuenta</h2>
+          <p class="login-subtitle">Introduce tus credenciales para continuar</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="usuario@empresa.com">
+            <mat-icon matPrefix>email</mat-icon>
+            @if (emailControl?.invalid && emailControl?.touched) {
+              <mat-error>
+                @if (emailControl?.hasError('required')) {
+                  Email requerido
+                }
+                @if (emailControl?.hasError('email')) {
+                  Email inválido
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Contraseña</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+            <mat-icon matPrefix>lock</mat-icon>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (passwordControl?.invalid && passwordControl?.touched) {
+              <mat-error>
+                @if (passwordControl?.hasError('required')) {
+                  Contraseña requerida
+                }
+                @if (passwordControl?.hasError('minlength')) {
+                  Mínimo 6 caracteres
+                }
+              </mat-error>
+            }
+          </mat-form-field>
+
+          @if (errorMessage) {
+            <div class="error-message">
+              <mat-icon>error_outline</mat-icon>
+              {{ errorMessage }}
+            </div>
+          }
+
+          <button mat-raised-button type="submit" class="btn-submit" [disabled]="loading">
+            @if (loading) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <mat-icon>arrow_forward</mat-icon>
+              Acceder
+            }
+          </button>
+
+          <div class="login-forgot-link">
+            <a routerLink="/forgot-password" (click)="cerrarLogin()">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <div class="login-register-link">
+            ¿No tienes cuenta? <a routerLink="/register">Registrate</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
